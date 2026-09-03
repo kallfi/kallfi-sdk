@@ -1,0 +1,1509 @@
+{
+  "openapi": "3.1.0",
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "info": {
+    "title": "Kallfi Third-Party API",
+    "version": "1.0.0",
+    "summary": "Proposed company-scoped API for operating Souls",
+    "description": "Status: commercial and product proposal. This document describes the proposed Kallfi third-party API only. The https://api.kallfi.com/v1 runtime is not implemented, generally available, or contractually binding yet. Final terms require commercial and legal approval. Publishing or serving this document does not activate the runtime API, authenticate a partner, perform a Soul operation, or prove production availability. The contract is intentionally limited to the seven endpoints listed here; Kallfi selects providers and models behind the contract.",
+    "contact": {
+      "name": "Kallfi developer documentation"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.kallfi.com",
+      "description": "Proposed public partner API origin. This server entry documents the intended origin and is not an availability claim."
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Source assets",
+      "description": "Bounded direct-upload intents for explicit appearance, content-style, and text-video-timeline source assets."
+    },
+    {
+      "name": "Souls",
+      "description": "Company-scoped Soul creation, projection, and revision-checked configuration updates."
+    },
+    {
+      "name": "Responses",
+      "description": "Asynchronous responses generated from bounded partner-supplied conversation context."
+    },
+    {
+      "name": "Generations",
+      "description": "Asynchronous image or video generation requested by product capability and a server-priced quote."
+    },
+    {
+      "name": "Operations",
+      "description": "Authoritative polling resources for accepted asynchronous work."
+    }
+  ],
+  "paths": {
+    "/v1/soul-source-assets": {
+      "post": {
+        "tags": ["Source assets"],
+        "summary": "Create a source-asset upload intent",
+        "description": "Proposed operation. Records one bounded source-asset declaration and returns a short-lived direct-to-storage upload target. Kallfi validates the exact uploaded bytes asynchronously; partner application servers do not send large media through this JSON API process.",
+        "operationId": "createSoulSourceAsset",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceAssetCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/SourceAssetAccepted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/souls": {
+      "post": {
+        "tags": ["Souls"],
+        "summary": "Create a Soul",
+        "description": "Proposed operation. Creates one company-scoped Human or Creature Soul from a bounded description and an optional ordered manifest of admitted source-asset IDs. An empty manifest creates from the description alone. Source admission, safety, profile derivation, Looks, and Voice may outlive the HTTP request, so the response is an asynchronous operation.",
+        "operationId": "createSoul",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SoulCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/SoulAccepted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/souls/{soul_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SoulId"
+        }
+      ],
+      "get": {
+        "tags": ["Souls"],
+        "summary": "Read a Soul",
+        "description": "Proposed operation. Returns the company-scoped Soul projection, including its current lifecycle, immutable external identity, revision, source-asset manifest, and current capabilities. Possession of an ID is not authorization.",
+        "operationId": "getSoul",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SoulRead"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Souls"],
+        "summary": "Update a Soul",
+        "description": "Proposed operation. Applies allowed configuration changes only when expected_revision matches the current company-scoped revision. The description is mutable here; kind, external identity, and the accepted source manifest are not silently replaced. A successful mutation is accepted asynchronously.",
+        "operationId": "updateSoul",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SoulUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/SoulUpdateAccepted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/souls/{soul_id}/responses": {
+      "post": {
+        "tags": ["Responses"],
+        "summary": "Request a Soul response",
+        "description": "Proposed operation. Requests one response from a bounded conversation context. The server owns safety, capability, provider, model, and execution-profile selection; this endpoint does not expose raw provider or model selection.",
+        "operationId": "createSoulResponse",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SoulId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/ResponseAccepted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/souls/{soul_id}/generations": {
+      "post": {
+        "tags": ["Generations"],
+        "summary": "Request image or video generation",
+        "description": "Proposed operation. Requests one image or video operation from a server-priced quote. Clients provide a quote ID and capability request, never client-computed Gem arithmetic, provider names, or raw model names.",
+        "operationId": "createSoulGeneration",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SoulId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/GenerationAccepted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/operations/{operation_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OperationId"
+        }
+      ],
+      "get": {
+        "tags": ["Operations"],
+        "summary": "Read an operation",
+        "description": "Proposed operation. Returns authoritative asynchronous state, usage facts, terminal failure, and output locators when available. Polling is bounded by the client's chosen cadence; completion may also be delivered through signed at-least-once webhook events.",
+        "operationId": "getOperation",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OperationRead"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque organization credential",
+        "description": "Organization-scoped bearer credential. Credentials are scoped, revocable, and never represented by a Soul or operation ID."
+      }
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "Opaque replay key for this mutation. Repeating the same key with the same request returns the original result; reusing it with different input returns a conflict.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "SoulId": {
+        "name": "soul_id",
+        "in": "path",
+        "required": true,
+        "description": "Company-scoped Kallfi Soul identifier.",
+        "schema": {
+          "$ref": "#/components/schemas/SoulId"
+        }
+      },
+      "OperationId": {
+        "name": "operation_id",
+        "in": "path",
+        "required": true,
+        "description": "Company-scoped asynchronous operation identifier.",
+        "schema": {
+          "$ref": "#/components/schemas/OperationId"
+        }
+      }
+    },
+    "responses": {
+      "SourceAssetAccepted": {
+        "description": "Accepted. The upload intent and its asynchronous validation operation are available.",
+        "headers": {
+          "Location": {
+            "description": "URL of the operation resource.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 4096
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SourceAssetAcceptedResponse"
+            }
+          }
+        }
+      },
+      "SoulAccepted": {
+        "description": "Accepted. Soul creation continues as an asynchronous operation.",
+        "headers": {
+          "Location": {
+            "description": "URL of the operation resource.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 4096
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SoulAcceptedResponse"
+            }
+          }
+        }
+      },
+      "SoulUpdateAccepted": {
+        "description": "Accepted. The revision-checked Soul update continues as an asynchronous operation.",
+        "headers": {
+          "Location": {
+            "description": "URL of the operation resource.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 4096
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SoulUpdateAcceptedResponse"
+            }
+          }
+        }
+      },
+      "ResponseAccepted": {
+        "description": "Accepted. Response generation continues as an asynchronous operation.",
+        "headers": {
+          "Location": {
+            "description": "URL of the operation resource.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 4096
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OperationAcceptedResponse"
+            }
+          }
+        }
+      },
+      "GenerationAccepted": {
+        "description": "Accepted. Image or video generation continues as an asynchronous operation.",
+        "headers": {
+          "Location": {
+            "description": "URL of the operation resource.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 4096
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OperationAcceptedResponse"
+            }
+          }
+        }
+      },
+      "SoulRead": {
+        "description": "The current company-scoped Soul projection.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Soul"
+            }
+          }
+        }
+      },
+      "OperationRead": {
+        "description": "The authoritative operation projection.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Operation"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "The request is malformed or violates the JSON contract.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Authentication is missing, invalid, expired, or revoked.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The credential is authenticated but not authorized for this company-scoped resource or capability.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The company-scoped resource does not exist or is not visible to this credential.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The replay key conflicts with a different request, or the requested revision/capability cannot converge.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "The bounded JSON request exceeds the contract's byte, item, or text limit.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "The declared source media type is not accepted for the explicit source-asset role.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "The request is structurally valid but fails a safety, rights, consent, capability, quote, or domain invariant.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "The organization or service is over a bounded rate, concurrency, outstanding-operation, or spend limit.",
+        "headers": {
+          "Retry-After": {
+            "description": "Minimum delay in seconds before retrying, when known.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 86400
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "The proposed service encountered an unexpected failure. The stable error envelope contains a request ID for support correlation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "The proposed service cannot currently admit this request or a required capability is unavailable. No billable successful operation is created.",
+        "headers": {
+          "Retry-After": {
+            "description": "Minimum delay in seconds before retrying, when known.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 86400
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message", "request_id"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,79}$",
+                "maxLength": 80,
+                "description": "Stable machine-readable error code."
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "request_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "details": {
+                "type": "object",
+                "maxProperties": 8,
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 256
+                },
+                "description": "Optional bounded diagnostic values. Clients must branch on code, not message or detail text."
+              }
+            }
+          }
+        }
+      },
+      "SoulId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^soul_[A-Za-z0-9][A-Za-z0-9._:-]{0,126}$",
+        "description": "Opaque company-scoped Soul identifier."
+      },
+      "OperationId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^op_[A-Za-z0-9][A-Za-z0-9._:-]{0,126}$",
+        "description": "Opaque company-scoped operation identifier."
+      },
+      "SourceAssetId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^ssa_[A-Za-z0-9][A-Za-z0-9._:-]{0,126}$",
+        "description": "Opaque company-scoped source-asset identifier."
+      },
+      "ExternalSoulId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+        "description": "Stable identifier chosen by the partner within its company scope."
+      },
+      "SoulKind": {
+        "type": "string",
+        "enum": ["human", "creature"],
+        "maxLength": 16
+      },
+      "SourceAssetType": {
+        "type": "string",
+        "enum": [
+          "appearance_reference",
+          "content_style_reference",
+          "text_video_timeline"
+        ],
+        "maxLength": 32
+      },
+      "Lifecycle": {
+        "type": "string",
+        "enum": ["draft", "active", "suspended", "deleted"],
+        "maxLength": 16
+      },
+      "MediaDeclaration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["content_type", "byte_length", "sha256"],
+        "properties": {
+          "content_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+$"
+          },
+          "byte_length": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000000000
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64,
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "RightsAttestation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["basis", "subject_consent"],
+        "properties": {
+          "basis": {
+            "type": "string",
+            "enum": ["owned_or_licensed"],
+            "maxLength": 32
+          },
+          "subject_consent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TimelineAnnotation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "request_at_ms",
+          "behavior_start_ms",
+          "behavior_end_ms",
+          "user_request"
+        ],
+        "properties": {
+          "request_at_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400000
+          },
+          "behavior_start_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400000
+          },
+          "behavior_end_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400000
+          },
+          "user_request": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        }
+      },
+      "SourceAssetCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "media", "rights_attestation"],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SourceAssetType"
+          },
+          "media": {
+            "$ref": "#/components/schemas/MediaDeclaration"
+          },
+          "annotations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/TimelineAnnotation"
+            },
+            "description": "Required only for text_video_timeline; annotations must be ordered, in-bounds, and non-overlapping."
+          },
+          "rights_attestation": {
+            "$ref": "#/components/schemas/RightsAttestation"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "text_video_timeline"
+                }
+              },
+              "required": ["type"]
+            },
+            "then": {
+              "required": ["annotations"]
+            },
+            "else": {
+              "properties": {
+                "annotations": {
+                  "maxItems": 0
+                }
+              }
+            }
+          }
+        ]
+      },
+      "UploadTarget": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["method", "url", "expires_at"],
+        "properties": {
+          "method": {
+            "type": "string",
+            "const": "PUT",
+            "maxLength": 3
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "headers": {
+            "type": "object",
+            "maxProperties": 8,
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Optional bounded headers required by the direct-upload target."
+          }
+        }
+      },
+      "SourceAssetStatus": {
+        "type": "string",
+        "enum": [
+          "upload_pending",
+          "validating",
+          "ready",
+          "rejected",
+          "expired"
+        ],
+        "maxLength": 16
+      },
+      "SourceAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_asset_id",
+          "type",
+          "status",
+          "media",
+          "rights_attestation",
+          "upload",
+          "created_at"
+        ],
+        "properties": {
+          "source_asset_id": {
+            "$ref": "#/components/schemas/SourceAssetId"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SourceAssetType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SourceAssetStatus"
+          },
+          "media": {
+            "$ref": "#/components/schemas/MediaDeclaration"
+          },
+          "annotations": {
+            "type": "array",
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/TimelineAnnotation"
+            }
+          },
+          "rights_attestation": {
+            "$ref": "#/components/schemas/RightsAttestation"
+          },
+          "upload": {
+            "$ref": "#/components/schemas/UploadTarget"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          }
+        }
+      },
+      "SoulCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "external_soul_id",
+          "kind",
+          "description",
+          "source_asset_ids"
+        ],
+        "properties": {
+          "external_soul_id": {
+            "$ref": "#/components/schemas/ExternalSoulId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SoulKind"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "source_asset_ids": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 16,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/SourceAssetId"
+            },
+            "description": "Ordered, immutable source-asset manifest. Use an empty array for description-only creation."
+          }
+        }
+      },
+      "SoulUpdateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["expected_revision"],
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "description": "At least one allowed mutable field should accompany expected_revision. Kind, external_soul_id, and the accepted source-asset manifest are immutable in v1."
+      },
+      "SoulCapabilities": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["responses", "image_generation", "video_generation"],
+        "properties": {
+          "responses": {
+            "type": "boolean"
+          },
+          "image_generation": {
+            "type": "boolean"
+          },
+          "video_generation": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Soul": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "soul_id",
+          "external_soul_id",
+          "kind",
+          "description",
+          "lifecycle",
+          "revision",
+          "source_asset_ids",
+          "capabilities",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "soul_id": {
+            "$ref": "#/components/schemas/SoulId"
+          },
+          "external_soul_id": {
+            "$ref": "#/components/schemas/ExternalSoulId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SoulKind"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "lifecycle": {
+            "$ref": "#/components/schemas/Lifecycle"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "source_asset_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/SourceAssetId"
+            }
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/SoulCapabilities"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          }
+        }
+      },
+      "ConversationMessage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant"],
+            "maxLength": 9
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        }
+      },
+      "ResponseCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["messages"],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "$ref": "#/components/schemas/ConversationMessage"
+            },
+            "description": "Ordered, bounded conversation context supplied by the partner."
+          },
+          "max_output_tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2048
+          }
+        }
+      },
+      "QuoteReference": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["quote_id"],
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "GenerationCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "prompt", "quote_id"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["image", "video"],
+            "maxLength": 5
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "quote_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Opaque server-issued quote identifier; clients do not calculate Gem amounts."
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 120000,
+            "description": "Requested video duration. Required for video and ignored for image only when the server explicitly documents that behavior."
+          },
+          "source_asset_ids": {
+            "type": "array",
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/SourceAssetId"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "video"
+                }
+              },
+              "required": ["kind"]
+            },
+            "then": {
+              "required": ["duration_ms"]
+            }
+          }
+        ]
+      },
+      "ResourceReference": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "id"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["source_asset", "soul", "response", "generation"],
+            "maxLength": 16
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "OperationKind": {
+        "type": "string",
+        "enum": [
+          "source_asset_validation",
+          "soul_creation",
+          "soul_update",
+          "soul_response",
+          "image_generation",
+          "video_generation"
+        ],
+        "maxLength": 32
+      },
+      "OperationStatus": {
+        "type": "string",
+        "enum": [
+          "accepted",
+          "submitted",
+          "running",
+          "acceptance_unknown",
+          "succeeded",
+          "failed",
+          "canceled"
+        ],
+        "maxLength": 20
+      },
+      "OperationFailure": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message", "retryable"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,79}$",
+            "maxLength": 80
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OperationUsage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reserved_gems", "consumed_gems", "released_gems"],
+        "properties": {
+          "reserved_gems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000
+          },
+          "consumed_gems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000
+          },
+          "released_gems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000
+          }
+        }
+      },
+      "MediaLocator": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "url", "expires_at"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["image", "video"],
+            "maxLength": 5
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          }
+        }
+      },
+      "OperationOutput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["text", "image", "video"],
+            "maxLength": 5
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          },
+          "media": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/components/schemas/MediaLocator"
+            }
+          }
+        }
+      },
+      "OperationLinks": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["self"],
+        "properties": {
+          "self": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      },
+      "Operation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation_id",
+          "kind",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "operation_id": {
+            "$ref": "#/components/schemas/OperationId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OperationKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OperationStatus"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceReference"
+          },
+          "progress_percent": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "quote": {
+            "$ref": "#/components/schemas/QuoteReference"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/OperationUsage"
+          },
+          "failure": {
+            "$ref": "#/components/schemas/OperationFailure"
+          },
+          "output": {
+            "$ref": "#/components/schemas/OperationOutput"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 64
+          },
+          "links": {
+            "$ref": "#/components/schemas/OperationLinks"
+          }
+        }
+      },
+      "OperationAcceptedResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation"],
+        "properties": {
+          "operation": {
+            "$ref": "#/components/schemas/Operation"
+          }
+        }
+      },
+      "SourceAssetAcceptedResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_asset", "operation"],
+        "properties": {
+          "source_asset": {
+            "$ref": "#/components/schemas/SourceAsset"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/Operation"
+          }
+        }
+      },
+      "SoulAcceptedResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["soul", "operation"],
+        "properties": {
+          "soul": {
+            "$ref": "#/components/schemas/Soul"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/Operation"
+          }
+        }
+      },
+      "SoulUpdateAcceptedResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["soul", "operation"],
+        "properties": {
+          "soul": {
+            "$ref": "#/components/schemas/Soul"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/Operation"
+          }
+        }
+      }
+    }
+  }
+}

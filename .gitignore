@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+.DS_Store
+
+python/.pytest_cache/
+python/.ruff_cache/
+python/.mypy_cache/
+python/.venv/
+python/build/
+python/dist/
+python/*.egg-info/
+python/src/*.egg-info/
+__pycache__/
+*.py[cod]
