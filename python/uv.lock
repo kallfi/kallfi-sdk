@@ -3,7 +3,8 @@ revision = 3
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.15'",
-    "python_full_version < '3.15'",
+    "python_full_version == '3.14.*'",
+    "python_full_version < '3.14'",
 ]
 
 [[package]]
@@ -127,23 +128,22 @@ wheels = [
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.33.0"
+version = "0.64.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "argcomplete" },
-    { name = "black" },
+    { name = "black", marker = "sys_platform != 'emscripten'" },
     { name = "genson" },
     { name = "inflect" },
-    { name = "isort" },
+    { name = "isort", marker = "sys_platform != 'emscripten'" },
     { name = "jinja2" },
-    { name = "packaging" },
     { name = "pydantic" },
     { name = "pyyaml" },
-    { name = "tomli", marker = "python_full_version < '3.12'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7d/a0/3f81c5c0c31d6f25f459e370e04553810f096e5dbd3cf7eda2a67709cd78/datamodel_code_generator-0.33.0.tar.gz", hash = "sha256:7635ef788201d69bd3e98ba88ce6afe479400dc2737fe9d5e21f87408f352c08", size = 458695, upload-time = "2025-08-14T13:50:36.965Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/d2/86c94a2836ed42231653a7ddaefa0a5bc23418167a876bba7376c96b3a35/datamodel_code_generator-0.64.0.tar.gz", hash = "sha256:9c592900a00b20e416494273c22435f5a9aef6ea8c7b9190747522a60497a1cb", size = 1316440, upload-time = "2026-06-14T17:24:50.528Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3b/d0/acd7a19dad4dc4118d2b6ba06df9a4a3725729e91fa3f2c63a765d4e7d44/datamodel_code_generator-0.33.0-py3-none-any.whl", hash = "sha256:e229264aa612b2d5bb4901bcd6c520a799ae0d5c19262577a0f876eb48afaaa3", size = 121148, upload-time = "2025-08-14T13:50:35.306Z" },
+    { url = "https://files.pythonhosted.org/packages/23/94/71338e2f0146ac10747a5537b3a1e45256e66b7c229869eb0ee787111b41/datamodel_code_generator-0.64.0-py3-none-any.whl", hash = "sha256:b7cd8bd41a312aa997aec6150670bad781847c5b674f17e4d70e78208a0fb990", size = 374698, upload-time = "2026-06-14T17:24:48.809Z" },
 ]
 
 [[package]]
@@ -289,7 +289,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "build", marker = "extra == 'test'", specifier = "==1.2.2.post1" },
-    { name = "datamodel-code-generator", marker = "extra == 'test'", specifier = "==0.33.0" },
+    { name = "datamodel-code-generator", marker = "extra == 'test'", specifier = "==0.64.0" },
     { name = "httpx", specifier = ">=0.27,<1" },
     { name = "mypy", marker = "extra == 'test'", specifier = ">=1.14,<2" },
     { name = "pydantic", specifier = ">=2.9,<3" },
