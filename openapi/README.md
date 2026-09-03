@@ -1,7 +1,7 @@
 # API contract snapshot
 
 `openapi.v1.json` is an exact snapshot of Kallfi's proposed third-party API
-contract at SDK version `0.1.0`.
+contract at SDK version `0.1.1`.
 
 - Upstream owner: `docs/api/openapi.v1.json` in the private Kallfi product
   repository

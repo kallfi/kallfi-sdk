@@ -1,6 +1,6 @@
 {
   "name": "@kallfi/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server-side TypeScript SDK for the Kallfi API.",
   "license": "MIT",
   "type": "module",
@@ -28,11 +28,28 @@
     "test": "npm run build && node --test test/sdk.test.mjs",
     "check": "npm run check:generated && npm run test",
     "prepack": "npm run build",
+    "prepare": "npm run build",
     "check:openapi": "node scripts/check-openapi-source.mjs",
     "check:release": "node scripts/check-release-version.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
     "typescript": "^5.6.3"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "undici-types": "^6.21.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kallfi/kallfi-sdk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/kallfi/kallfi-sdk/issues"
+  },
+  "homepage": "https://github.com/kallfi/kallfi-sdk#readme"
 }

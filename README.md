@@ -10,13 +10,13 @@ third-party Soul API.
 
 ## Install
 
-The repository is ready for one shared `v0.1.0` source tag. Until registry
+The repository is ready for one shared `v0.1.1` source tag. Until registry
 publication is configured, install that tag directly from GitHub:
 
 ```sh
-npm install 'github:kallfi/kallfi-sdk#v0.1.0'
+npm install 'github:kallfi/kallfi-sdk#v0.1.1'
 python -m pip install \
-  'kallfi @ git+https://github.com/kallfi/kallfi-sdk.git@v0.1.0#subdirectory=python'
+  'kallfi @ git+https://github.com/kallfi/kallfi-sdk.git@v0.1.1#subdirectory=python'
 ```
 
 After the packages are published by Kallfi, the registry commands will be:
