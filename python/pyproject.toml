@@ -30,7 +30,7 @@ Issues = "https://github.com/kallfi/kallfi-sdk/issues"
 [project.optional-dependencies]
 test = [
   "build==1.2.2.post1",
-  "datamodel-code-generator==0.33.0",
+  "datamodel-code-generator==0.64.0",
   "mypy>=1.14,<2",
   "pytest==8.3.5",
   "ruff>=0.9,<1",
