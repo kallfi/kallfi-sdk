@@ -153,6 +153,80 @@ function mutationKey(options: MutationOptions | string): string {
   return key?.trim() ? key : "";
 }
 
+const responseToken = (value: string | null) =>
+  value && /^[A-Za-z0-9._:-]{1,128}$/.test(value) ? value : undefined;
+
+function responseMetadata(response: Response, baseUrl: string) {
+  const requestId = responseToken(response.headers.get("x-request-id"));
+  const retryRaw = response.headers.get("retry-after");
+  const retryAfter =
+    retryRaw &&
+    (/^\d{1,10}$/.test(retryRaw) ||
+      (/^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(retryRaw) &&
+        Number.isFinite(Date.parse(retryRaw))))
+      ? retryRaw
+      : undefined;
+  const contentType = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+  let location: string | undefined;
+  const rawLocation = response.headers.get("location");
+  if (rawLocation && rawLocation.length <= 2048) {
+    try {
+      const target = new URL(rawLocation, baseUrl);
+      if (
+        target.origin === baseUrl &&
+        target.pathname.startsWith("/v1/") &&
+        !target.search &&
+        !target.hash &&
+        !target.username &&
+        !target.password
+      )
+        location = target.toString();
+    } catch {
+      /* no untrusted metadata */
+    }
+  }
+  return { status: response.status, requestId, retryAfter, location, contentType };
+}
+
+function apiResponseError(
+  payload: unknown,
+  metadata: ReturnType<typeof responseMetadata>,
+  apiKey: string,
+): KallfiApiError {
+  const root =
+    payload && typeof payload === "object" ? (payload as Record<string, unknown>) : undefined;
+  const envelope = root?.error;
+  const value =
+    envelope && typeof envelope === "object" ? (envelope as Record<string, unknown>) : undefined;
+  const safeErrorCode = (candidate: unknown): string | undefined =>
+    typeof candidate === "string" &&
+    /^[a-z][a-z0-9_]{0,95}$/.test(candidate) &&
+    !candidate.includes(apiKey)
+      ? candidate
+      : undefined;
+  // Nested canonical envelopes retain precedence; never expose human prose/details.
+  const code =
+    safeErrorCode(value?.code) ?? safeErrorCode(root?.code) ?? safeErrorCode(envelope) ?? "http_error";
+  const id = typeof value?.request_id === "string" ? responseToken(value.request_id) : metadata.requestId;
+  const outcomeValue = value?.outcome ?? root?.outcome;
+  const outcome =
+    outcomeValue === "mutation_outcome_unknown" || outcomeValue === "read_projection_unavailable"
+      ? outcomeValue
+      : undefined;
+  const reconciliation = value?.reconciliationRequired ?? root?.reconciliationRequired;
+  const retry = value?.automaticRetryAllowed ?? root?.automaticRetryAllowed;
+  return new KallfiApiError({
+    status: metadata.status,
+    code,
+    message: `Kallfi API request failed (${metadata.status})`,
+    request_id: id,
+    retry_after: metadata.retryAfter,
+    outcome,
+    reconciliationRequired: typeof reconciliation === "boolean" ? reconciliation : undefined,
+    automaticRetryAllowed: typeof retry === "boolean" ? retry : undefined,
+  });
+}
+
 export class Kallfi {
   readonly sourceAssets: SourceAssetsResource;
   readonly souls: SoulsResource;
@@ -185,12 +259,7 @@ export class Kallfi {
       options.surface ?? (supplied ? knownOrigins[supplied.origin] : undefined) ?? "nsfw-disabled";
     if (surface !== "nsfw-disabled" && surface !== "nsfw-enabled") throw new TypeError("surface is invalid");
     const expectedOrigin = surface === "nsfw-disabled" ? "https://acr.kallfi.com" : "https://acr.kallfi.red";
-    let base: URL;
-    try {
-      base = new URL(options.baseUrl ?? expectedOrigin);
-    } catch {
-      throw new TypeError("baseUrl is invalid");
-    }
+    const base = supplied ?? new URL(expectedOrigin);
     if (
       knownOrigins[base.origin] !== surface ||
       base.username ||
@@ -440,37 +509,8 @@ export class Kallfi {
           cache: "no-store",
         }),
       );
-      const token = (value: string | null) =>
-        value && /^[A-Za-z0-9._:-]{1,128}$/.test(value) ? value : undefined;
-      const requestId = token(response.headers.get("x-request-id"));
-      const retryRaw = response.headers.get("retry-after");
-      const retryAfter =
-        retryRaw &&
-        (/^\d{1,10}$/.test(retryRaw) ||
-          (/^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(retryRaw) &&
-            Number.isFinite(Date.parse(retryRaw))))
-          ? retryRaw
-          : undefined;
-      const contentType = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
-      let location: string | undefined;
-      const rawLocation = response.headers.get("location");
-      if (rawLocation && rawLocation.length <= 2048) {
-        try {
-          const target = new URL(rawLocation, this.baseUrl);
-          if (
-            target.origin === this.baseUrl &&
-            target.pathname.startsWith("/v1/") &&
-            !target.search &&
-            !target.hash &&
-            !target.username &&
-            !target.password
-          )
-            location = target.toString();
-        } catch {
-          /* no untrusted metadata */
-        }
-      }
-      const metadata = { status: response.status, requestId, retryAfter, location, contentType };
+      const metadata = responseMetadata(response, this.baseUrl);
+      const { requestId, retryAfter, contentType } = metadata;
       const fail = (code: string) =>
         new KallfiApiError({
           status: response.status,
@@ -534,38 +574,7 @@ export class Kallfi {
         throw fail("invalid_json_response");
       }
       if (!response.ok) {
-        const root =
-          payload && typeof payload === "object" ? (payload as Record<string, unknown>) : undefined;
-        const envelope = root?.error;
-        const value =
-          envelope && typeof envelope === "object" ? (envelope as Record<string, unknown>) : undefined;
-        const safeErrorCode = (candidate: unknown): string | undefined =>
-          typeof candidate === "string" &&
-          /^[a-z][a-z0-9_]{0,95}$/.test(candidate) &&
-          !candidate.includes(this.apiKey)
-            ? candidate
-            : undefined;
-        // Nested canonical envelopes retain precedence; never expose human prose/details.
-        const code =
-          safeErrorCode(value?.code) ?? safeErrorCode(root?.code) ?? safeErrorCode(envelope) ?? "http_error";
-        const id = typeof value?.request_id === "string" ? token(value.request_id) : requestId;
-        const outcomeValue = value?.outcome ?? root?.outcome;
-        const outcome =
-          outcomeValue === "mutation_outcome_unknown" || outcomeValue === "read_projection_unavailable"
-            ? outcomeValue
-            : undefined;
-        const reconciliation = value?.reconciliationRequired ?? root?.reconciliationRequired;
-        const retry = value?.automaticRetryAllowed ?? root?.automaticRetryAllowed;
-        throw new KallfiApiError({
-          status: response.status,
-          code,
-          message: `Kallfi API request failed (${response.status})`,
-          request_id: id,
-          retry_after: retryAfter,
-          outcome,
-          reconciliationRequired: typeof reconciliation === "boolean" ? reconciliation : undefined,
-          automaticRetryAllowed: typeof retry === "boolean" ? retry : undefined,
-        });
+        throw apiResponseError(payload, metadata, this.apiKey);
       }
       return { ...metadata, data: payload as T };
     } catch (error) {

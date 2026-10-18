@@ -336,6 +336,28 @@ def _detailed(response: httpx.Response, content: bytes) -> APIResponse:
     )
 
 
+def _read_response(response: httpx.Response, deadline: float, limit: int) -> bytes:
+    content = bytearray()
+    for chunk in response.iter_bytes():
+        _check_deadline(deadline)
+        if len(content) + len(chunk) > limit:
+            raise KallfiTransportError("Kallfi response exceeded the configured limit")
+        content.extend(chunk)
+    _check_deadline(deadline)
+    return bytes(content)
+
+
+async def _read_async_response(response: httpx.Response, deadline: float, limit: int) -> bytes:
+    content = bytearray()
+    async for chunk in response.aiter_bytes():
+        _check_deadline(deadline)
+        if len(content) + len(chunk) > limit:
+            raise KallfiTransportError("Kallfi response exceeded the configured limit")
+        content.extend(chunk)
+    _check_deadline(deadline)
+    return bytes(content)
+
+
 class _SyncTransport:
     def __init__(
         self, client: httpx.Client, preflight: Callable[[], float], headers: dict[str, str]
@@ -345,6 +367,14 @@ class _SyncTransport:
         self.headers = headers
 
     def request(self, method: str, path: str, model: Type[ModelT], **kwargs: Any) -> ModelT:
+        response, content = self.send(method, path, 8 * 1024 * 1024, **kwargs)
+        return _decode(
+            httpx.Response(response.status_code, headers=response.headers, content=content), model
+        )
+
+    def send(
+        self, method: str, path: str, max_response_bytes: int, **kwargs: Any
+    ) -> tuple[httpx.Response, bytes]:
         remaining = self.preflight()
         deadline = time.monotonic() + remaining
         kwargs["headers"] = {**self.headers, **kwargs.get("headers", {})}
@@ -352,19 +382,8 @@ class _SyncTransport:
             with self.client.stream(
                 method, path, follow_redirects=False, auth=None, timeout=remaining, **kwargs
             ) as response:
-                content = bytearray()
-                for chunk in response.iter_bytes():
-                    _check_deadline(deadline)
-                    if len(content) + len(chunk) > 8 * 1024 * 1024:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    content.extend(chunk)
-                _check_deadline(deadline)
-                return _decode(
-                    httpx.Response(
-                        response.status_code, headers=response.headers, content=bytes(content)
-                    ),
-                    model,
-                )
+                content = _read_response(response, deadline, max_response_bytes)
+                return response, content
         except httpx.TimeoutException as error:
             raise KallfiTimeoutError("Kallfi request timed out") from error
         except httpx.HTTPError as error:
@@ -494,13 +513,12 @@ class Kallfi:
         self._client = http_client or httpx.Client(
             base_url=base_url.rstrip("/"), timeout=timeout, follow_redirects=False
         )
-        self._headers = headers
         if "x-kallfi-workspace-id" in self._client.headers:
             raise ValueError("http_client must not preconfigure workspace selection")
-        transport = _SyncTransport(self._client, self._ensure_workspace, headers)
-        self.source_assets = _SourceAssets(transport)
-        self.souls = _Souls(transport)
-        self.operations = _Operations(transport)
+        self._transport = _SyncTransport(self._client, self._ensure_workspace, headers)
+        self.source_assets = _SourceAssets(self._transport)
+        self.souls = _Souls(self._transport)
+        self.operations = _Operations(self._transport)
 
     def _ensure_workspace(self) -> float:
         started = time.monotonic()
@@ -527,31 +545,10 @@ class Kallfi:
         method, path, kwargs = _command(
             operation_id, self._workspace_id, path_params, body, idempotency_key
         )
-        remaining = self._ensure_workspace()
-        deadline = time.monotonic() + remaining
-        kwargs["headers"] = {**self._headers, **kwargs.get("headers", {})}
-        try:
-            with self._client.stream(
-                method,
-                path,
-                params=query,
-                follow_redirects=False,
-                auth=None,
-                timeout=remaining,
-                **kwargs,
-            ) as response:
-                chunks = bytearray()
-                for chunk in response.iter_bytes():
-                    _check_deadline(deadline)
-                    if len(chunks) + len(chunk) > max_response_bytes:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    chunks.extend(chunk)
-                _check_deadline(deadline)
-                return _detailed(response, bytes(chunks))
-        except httpx.TimeoutException as error:
-            raise KallfiTimeoutError("Kallfi request timed out") from error
-        except httpx.HTTPError as error:
-            raise KallfiTransportError("Kallfi request failed") from error
+        response, content = self._transport.send(
+            method, path, max_response_bytes, params=query, **kwargs
+        )
+        return _detailed(response, content)
 
     @classmethod
     def from_env(cls, **kwargs: Any) -> Kallfi:
@@ -595,6 +592,14 @@ class _AsyncTransport:
             ) from error
 
     async def _request(self, method: str, path: str, model: Type[ModelT], **kwargs: Any) -> ModelT:
+        response, content = await self.send(method, path, 8 * 1024 * 1024, **kwargs)
+        return _decode(
+            httpx.Response(response.status_code, headers=response.headers, content=content), model
+        )
+
+    async def send(
+        self, method: str, path: str, max_response_bytes: int, **kwargs: Any
+    ) -> tuple[httpx.Response, bytes]:
         remaining = await self.preflight()
         deadline = time.monotonic() + remaining
         kwargs["headers"] = {**self.headers, **kwargs.get("headers", {})}
@@ -602,19 +607,8 @@ class _AsyncTransport:
             async with self.client.stream(
                 method, path, follow_redirects=False, auth=None, timeout=remaining, **kwargs
             ) as response:
-                content = bytearray()
-                async for chunk in response.aiter_bytes():
-                    _check_deadline(deadline)
-                    if len(content) + len(chunk) > 8 * 1024 * 1024:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    content.extend(chunk)
-                _check_deadline(deadline)
-                return _decode(
-                    httpx.Response(
-                        response.status_code, headers=response.headers, content=bytes(content)
-                    ),
-                    model,
-                )
+                content = await _read_async_response(response, deadline, max_response_bytes)
+                return response, content
         except httpx.TimeoutException as error:
             raise KallfiTimeoutError("Kallfi request timed out") from error
         except httpx.HTTPError as error:
@@ -746,13 +740,14 @@ class AsyncKallfi:
         self._client = http_client or httpx.AsyncClient(
             base_url=base_url.rstrip("/"), timeout=timeout, follow_redirects=False
         )
-        self._headers = headers
         if "x-kallfi-workspace-id" in self._client.headers:
             raise ValueError("http_client must not preconfigure workspace selection")
-        transport = _AsyncTransport(self._client, self._ensure_workspace, headers, self._timeout)
-        self.source_assets = _AsyncSourceAssets(transport)
-        self.souls = _AsyncSouls(transport)
-        self.operations = _AsyncOperations(transport)
+        self._transport = _AsyncTransport(
+            self._client, self._ensure_workspace, headers, self._timeout
+        )
+        self.source_assets = _AsyncSourceAssets(self._transport)
+        self.souls = _AsyncSouls(self._transport)
+        self.operations = _AsyncOperations(self._transport)
 
     async def _ensure_workspace(self) -> float:
         started = time.monotonic()
@@ -811,31 +806,10 @@ class AsyncKallfi:
         method, path, kwargs = _command(
             operation_id, self._workspace_id, path_params, body, idempotency_key
         )
-        remaining = await self._ensure_workspace()
-        deadline = time.monotonic() + remaining
-        kwargs["headers"] = {**self._headers, **kwargs.get("headers", {})}
-        try:
-            async with self._client.stream(
-                method,
-                path,
-                params=query,
-                follow_redirects=False,
-                auth=None,
-                timeout=remaining,
-                **kwargs,
-            ) as response:
-                chunks = bytearray()
-                async for chunk in response.aiter_bytes():
-                    _check_deadline(deadline)
-                    if len(chunks) + len(chunk) > max_response_bytes:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    chunks.extend(chunk)
-                _check_deadline(deadline)
-                return _detailed(response, bytes(chunks))
-        except httpx.TimeoutException as error:
-            raise KallfiTimeoutError("Kallfi request timed out") from error
-        except httpx.HTTPError as error:
-            raise KallfiTransportError("Kallfi request failed") from error
+        response, content = await self._transport.send(
+            method, path, max_response_bytes, params=query, **kwargs
+        )
+        return _detailed(response, content)
 
     @classmethod
     def from_env(cls, **kwargs: Any) -> AsyncKallfi:
