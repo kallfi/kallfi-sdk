@@ -1,6 +1,6 @@
 {
   "name": "@kallfi/sdk",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Server-side TypeScript SDK for the Kallfi API.",
   "license": "MIT",
   "type": "module",
