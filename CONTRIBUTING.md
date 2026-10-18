@@ -13,3 +13,7 @@ Thank you for helping improve the Kallfi SDKs.
 
 By contributing, you agree that your contribution is licensed under the MIT
 License in this repository.
+
+Keep handwritten client code readable with explicit control flow and meaningful
+names. Generated types and operation metadata remain owned by the OpenAPI
+generator; change their source rather than hand-formatting generated output.
