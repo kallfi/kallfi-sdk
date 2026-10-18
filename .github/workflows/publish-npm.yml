@@ -1,0 +1,46 @@
+name: Publish JavaScript SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag, for example v0.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-npm-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: vars.NPM_TRUSTED_PUBLISHING_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - name: Verify release tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          test "$(git describe --tags --exact-match)" = "$RELEASE_TAG"
+          GITHUB_REF_TYPE=tag GITHUB_REF_NAME="$RELEASE_TAG" node scripts/check-release-version.mjs
+      - run: npm ci
+      - run: npm run check:openapi
+      - run: npm run check
+      - run: npm publish --access public --provenance

@@ -1,0 +1,1595 @@
+{
+  "sourceSHA256": "742fe946d29ef7e286eead3c8cea50a8a344793b2136f843655f896daea1d99b",
+  "operations": [
+    {
+      "operationId": "createSoulSourceAsset",
+      "method": "POST",
+      "path": "/v1/soul-source-assets",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SourceAssetCreateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createSoul",
+      "method": "POST",
+      "path": "/v1/souls",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SoulCreateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getSoul",
+      "method": "GET",
+      "path": "/v1/souls/{soul_id}",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": null
+    },
+    {
+      "operationId": "updateSoul",
+      "method": "PATCH",
+      "path": "/v1/souls/{soul_id}",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SoulUpdateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createSoulResponse",
+      "method": "POST",
+      "path": "/v1/souls/{soul_id}/responses",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ResponseCreateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createSoulGeneration",
+      "method": "POST",
+      "path": "/v1/souls/{soul_id}/generations",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GenerationCreateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getOperation",
+      "method": "GET",
+      "path": "/v1/operations/{operation_id}",
+      "scope": "workspace",
+      "idempotencyRequired": false,
+      "parameters": [],
+      "requestBody": null
+    },
+    {
+      "operationId": "createPost",
+      "method": "POST",
+      "path": "/v1/posts",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductPostRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createMediaUpload",
+      "method": "POST",
+      "path": "/v1/media/uploads",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductMediaUploadRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "preparePostGeneration",
+      "method": "POST",
+      "path": "/v1/posts/generation-pricing",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductGeneratePricingRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "generatePost",
+      "method": "POST",
+      "path": "/v1/posts/generations",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductGenerateRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "monetizeSoul",
+      "method": "POST",
+      "path": "/v1/souls/{soul_id}/monetize",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "name": "soul_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductSoulMonetizationRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "unmonetizeSoul",
+      "method": "POST",
+      "path": "/v1/souls/{soul_id}/unmonetize",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "name": "soul_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductSoulUnmonetizationRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "publishSoul",
+      "method": "POST",
+      "path": "/v1/souls/{soul_id}/publish",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "name": "soul_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductSoulPublishRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createAccountSoul",
+      "method": "POST",
+      "path": "/v1/account/actions/createAccountSoul",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateAccountSoulRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoul",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoul",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "listAccountSoulDrafts",
+      "method": "POST",
+      "path": "/v1/account/actions/listAccountSoulDrafts",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ListAccountSoulDraftsRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulDraft",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulDraft",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulDraftRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulDetails",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulDetails",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulDetailsRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "generateAccountSoulLooks",
+      "method": "POST",
+      "path": "/v1/account/actions/generateAccountSoulLooks",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GenerateAccountSoulLooksRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "generateAccountSoulVoice",
+      "method": "POST",
+      "path": "/v1/account/actions/generateAccountSoulVoice",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GenerateAccountSoulVoiceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "selectAccountSoulVoice",
+      "method": "POST",
+      "path": "/v1/account/actions/selectAccountSoulVoice",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SelectAccountSoulVoiceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulLanguages",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulLanguages",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulLanguagesRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "reviewAccountSoul",
+      "method": "POST",
+      "path": "/v1/account/actions/reviewAccountSoul",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReviewAccountSoulRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "promoteAccountSoul",
+      "method": "POST",
+      "path": "/v1/account/actions/promoteAccountSoul",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PromoteAccountSoulRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulLore",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulLore",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulLoreRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulLore",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulLore",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulLoreRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createAccountSoulReferenceUpload",
+      "method": "POST",
+      "path": "/v1/account/actions/createAccountSoulReferenceUpload",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateAccountSoulReferenceUploadRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "finalizeAccountSoulReferenceUpload",
+      "method": "POST",
+      "path": "/v1/account/actions/finalizeAccountSoulReferenceUpload",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FinalizeAccountSoulReferenceUploadRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "abandonAccountSoulDraft",
+      "method": "POST",
+      "path": "/v1/account/actions/abandonAccountSoulDraft",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AbandonAccountSoulDraftRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "deleteAccountSoulDraft",
+      "method": "POST",
+      "path": "/v1/account/actions/deleteAccountSoulDraft",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAccountSoulDraftRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "prepareAccountSoulEditSeed",
+      "method": "POST",
+      "path": "/v1/account/actions/prepareAccountSoulEditSeed",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PrepareAccountSoulEditSeedRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "checkAccountSoulHandle",
+      "method": "POST",
+      "path": "/v1/account/actions/checkAccountSoulHandle",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CheckAccountSoulHandleRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "startAccountSoulConversation",
+      "method": "POST",
+      "path": "/v1/account/actions/startAccountSoulConversation",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StartAccountSoulConversationRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "createAccountSoulResponse",
+      "method": "POST",
+      "path": "/v1/account/actions/createAccountSoulResponse",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateAccountSoulResponseRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulResponses",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulResponses",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulResponsesRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountOperation",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountOperation",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountOperationRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountCreatorPlan",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountCreatorPlan",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountCreatorPlanRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "listAccountConversations",
+      "method": "POST",
+      "path": "/v1/account/actions/listAccountConversations",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ListAccountConversationsRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountUnreadMessageCount",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountUnreadMessageCount",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountUnreadMessageCountRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "markAccountConversationRead",
+      "method": "POST",
+      "path": "/v1/account/actions/markAccountConversationRead",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MarkAccountConversationReadRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountCreatorPerformance",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountCreatorPerformance",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountCreatorPerformanceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountCreatorPerformanceGraph",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountCreatorPerformanceGraph",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountCreatorPerformanceGraphRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulSettings",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulSettings",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulSettingsRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulAutomationPreferences",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulAutomationPreferences",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulAutomationPreferencesRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulGenerationPrices",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulGenerationPrices",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulGenerationPricesRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulSubscriptionPrice",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulSubscriptionPrice",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulSubscriptionPriceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulDiscountAudience",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulDiscountAudience",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulDiscountAudienceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulDiscountAudience",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulDiscountAudience",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulDiscountAudienceRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulMessageTerms",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulMessageTerms",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulMessageTermsRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "setAccountSoulMessageBudgetEnabled",
+      "method": "POST",
+      "path": "/v1/account/actions/setAccountSoulMessageBudgetEnabled",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SetAccountSoulMessageBudgetEnabledRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "prepareAccountSoulMessageBudget",
+      "method": "POST",
+      "path": "/v1/account/actions/prepareAccountSoulMessageBudget",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PrepareAccountSoulMessageBudgetRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "commitAccountSoulMessageBudget",
+      "method": "POST",
+      "path": "/v1/account/actions/commitAccountSoulMessageBudget",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CommitAccountSoulMessageBudgetRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulLikenessPolicy",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulLikenessPolicy",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulLikenessPolicyRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulLikenessPolicy",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulLikenessPolicy",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulLikenessPolicyRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulSurfaceVisibility",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulSurfaceVisibility",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulSurfaceVisibilityRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulHandle",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulHandle",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulHandleRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulDisplayName",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulDisplayName",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulDisplayNameRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountSoulBio",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountSoulBio",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountSoulBioRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "deleteAccountSoul",
+      "method": "POST",
+      "path": "/v1/account/actions/deleteAccountSoul",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAccountSoulRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountSoulDeletionStatus",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountSoulDeletionStatus",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountSoulDeletionStatusRequest"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
