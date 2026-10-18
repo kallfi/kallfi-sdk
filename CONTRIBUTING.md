@@ -26,3 +26,10 @@ response policy. Python's sync and async bounded readers are shared by resource
 helpers and canonical operation calls; workspace discovery retains its separate
 4096-byte capability limit. Refactoring these paths must preserve public types,
 caller-owned idempotency keys, timeout budgets, and the absence of mutation retries.
+
+Both Python resource methods and canonical `call` methods dispatch through their
+sync or async transport's `send` method. It owns workspace preflight, headers,
+deadlines, bounded reading, and HTTP transport errors; the caller selects typed
+model decoding or detailed response decoding. Python model generation and its
+check share `python/scripts/generate-models.sh`; an optional output path supports
+temporary verification without duplicating code-generator flags.
