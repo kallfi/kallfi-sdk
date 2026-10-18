@@ -12,26 +12,15 @@ import type {
   SourceAssetCreateRequest,
 } from "./generated.js";
 
-export type FetchLike = (
-  input: string | URL,
-  init?: RequestInit,
-) => Promise<Response>;
+export type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>;
 
 export type KallfiSurface = "nsfw-disabled" | "nsfw-enabled";
 export interface OperationArguments {
   path?: Readonly<Record<string, string>>;
-  query?: Readonly<
-    Record<
-      string,
-      string | number | boolean | ReadonlyArray<string | number | boolean>
-    >
-  >;
+  query?: Readonly<Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>>;
   body?: unknown;
 }
-export type OperationOptions = Pick<
-  DetailedRequestOptions,
-  "idempotencyKey" | "signal" | "timeoutMs"
->;
+export type OperationOptions = Pick<DetailedRequestOptions, "idempotencyKey" | "signal" | "timeoutMs">;
 
 export interface DetailedRequestOptions {
   body?: unknown;
@@ -138,11 +127,7 @@ export class KallfiApiError extends Error {
 function rejectTraversal(value: string): void {
   let decoded = value;
   for (let depth = 0; depth < 6; depth++) {
-    if (
-      decoded
-        .split(/[\\/]/)
-        .some((segment) => segment === "." || segment === "..")
-    )
+    if (decoded.split(/[\\/]/).some((segment) => segment === "." || segment === ".."))
       throw new TypeError("Dot path segments are not allowed");
     if (!/%[0-9a-f]{2}/i.test(decoded)) return;
     let next: string;
@@ -197,15 +182,9 @@ export class Kallfi {
       }
     }
     const surface =
-      options.surface ??
-      (supplied ? knownOrigins[supplied.origin] : undefined) ??
-      "nsfw-disabled";
-    if (surface !== "nsfw-disabled" && surface !== "nsfw-enabled")
-      throw new TypeError("surface is invalid");
-    const expectedOrigin =
-      surface === "nsfw-disabled"
-        ? "https://acr.kallfi.com"
-        : "https://acr.kallfi.red";
+      options.surface ?? (supplied ? knownOrigins[supplied.origin] : undefined) ?? "nsfw-disabled";
+    if (surface !== "nsfw-disabled" && surface !== "nsfw-enabled") throw new TypeError("surface is invalid");
+    const expectedOrigin = surface === "nsfw-disabled" ? "https://acr.kallfi.com" : "https://acr.kallfi.red";
     let base: URL;
     try {
       base = new URL(options.baseUrl ?? expectedOrigin);
@@ -225,9 +204,7 @@ export class Kallfi {
     this.baseUrl = base.origin;
     if (
       options.workspaceId !== undefined &&
-      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        options.workspaceId,
-      )
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(options.workspaceId)
     ) {
       throw new TypeError("workspaceId must be a UUID");
     }
@@ -240,8 +217,7 @@ export class Kallfi {
     )
       throw new TypeError("maxResponseBytes must be between 1 and 16777216");
     this.fetcher = options.fetch ?? globalThis.fetch;
-    if (!this.fetcher)
-      throw new TypeError("A fetch implementation is required");
+    if (!this.fetcher) throw new TypeError("A fetch implementation is required");
     this.timeoutMs = options.timeoutMs ?? 30_000;
     if (!Number.isFinite(this.timeoutMs) || this.timeoutMs <= 0)
       throw new TypeError("timeoutMs must be positive");
@@ -261,58 +237,44 @@ export class Kallfi {
     args: OperationArguments = {},
     options: OperationOptions = {},
   ): Promise<DetailedResponse<T>> {
-    if (!Object.hasOwn(KALLFI_OPERATIONS, operationId))
-      throw new TypeError("Unknown operationId");
+    if (!Object.hasOwn(KALLFI_OPERATIONS, operationId)) throw new TypeError("Unknown operationId");
     const operation = KALLFI_OPERATIONS[operationId];
     if (operation.scope === "account" && this.workspaceId !== undefined)
-      throw new TypeError(
-        "Account operations do not accept a workspace selector",
-      );
-    if (
-      Object.keys(args).some((key) => !["path", "query", "body"].includes(key))
-    )
+      throw new TypeError("Account operations do not accept a workspace selector");
+    if (Object.keys(args).some((key) => !["path", "query", "body"].includes(key)))
       throw new TypeError("Unknown operation argument");
     const paths = args.path ?? {};
     const query = args.query ?? {};
-    const pathParameters: readonly { name: string; required: boolean }[] =
-      operation.pathParameters;
+    const pathParameters: readonly { name: string; required: boolean }[] = operation.pathParameters;
     const queryParameters: readonly {
       name: string;
       required: boolean;
       array: boolean;
     }[] = operation.queryParameters;
     if (
-      Object.keys(paths).some(
-        (key) => !pathParameters.some((parameter) => parameter.name === key),
-      ) ||
-      Object.keys(query).some(
-        (key) => !queryParameters.some((parameter) => parameter.name === key),
-      )
+      Object.keys(paths).some((key) => !pathParameters.some((parameter) => parameter.name === key)) ||
+      Object.keys(query).some((key) => !queryParameters.some((parameter) => parameter.name === key))
     )
       throw new TypeError("Unknown path or query parameter");
     let path: string = operation.path;
     for (const parameter of pathParameters) {
       const value = paths[parameter.name];
       if (value === undefined) {
-        if (parameter.required)
-          throw new TypeError("Required path parameter is missing");
+        if (parameter.required) throw new TypeError("Required path parameter is missing");
         continue;
       }
       path = path.replace(`{${parameter.name}}`, encoded(value));
     }
-    if (/\{[^}]+\}/.test(path))
-      throw new TypeError("Required path parameter is missing");
+    if (/\{[^}]+\}/.test(path)) throw new TypeError("Required path parameter is missing");
     const encodedQuery = new URLSearchParams();
     for (const parameter of queryParameters) {
       const value = query[parameter.name];
       if (value === undefined) {
-        if (parameter.required)
-          throw new TypeError("Required query parameter is missing");
+        if (parameter.required) throw new TypeError("Required query parameter is missing");
         continue;
       }
       const values = Array.isArray(value) ? value : [value];
-      if (Array.isArray(value) && !parameter.array)
-        throw new TypeError("Query parameter is not an array");
+      if (Array.isArray(value) && !parameter.array) throw new TypeError("Query parameter is not an array");
       for (const entry of values) {
         if (
           !["string", "number", "boolean"].includes(typeof entry) ||
@@ -327,27 +289,16 @@ export class Kallfi {
     if (!operation.bodyAllowed && args.body !== undefined)
       throw new TypeError("Operation does not accept a request body");
     const suffix = encodedQuery.toString();
-    return this.requestDetailed<T>(
-      operation.method,
-      suffix ? `${path}?${suffix}` : path,
-      {
-        body: args.body,
-        idempotencyKey: options.idempotencyKey,
-        signal: options.signal,
-        timeoutMs: options.timeoutMs,
-      },
-    );
+    return this.requestDetailed<T>(operation.method, suffix ? `${path}?${suffix}` : path, {
+      body: args.body,
+      idempotencyKey: options.idempotencyKey,
+      signal: options.signal,
+      timeoutMs: options.timeoutMs,
+    });
   }
 
-  async request<T>(
-    method: string,
-    path: string,
-    body?: unknown,
-    idempotencyKey?: string,
-  ): Promise<T> {
-    return (
-      await this.requestDetailed<T>(method, path, { body, idempotencyKey })
-    ).data;
+  async request<T>(method: string, path: string, body?: unknown, idempotencyKey?: string): Promise<T> {
+    return (await this.requestDetailed<T>(method, path, { body, idempotencyKey })).data;
   }
 
   async requestDetailed<T>(
@@ -355,14 +306,9 @@ export class Kallfi {
     path: string,
     options: DetailedRequestOptions = {},
   ): Promise<DetailedResponse<T>> {
-    if (this.workspaceId === undefined)
-      return this.performRequest<T>(method, path, options, "business");
+    if (this.workspaceId === undefined) return this.performRequest<T>(method, path, options, "business");
     const timeoutMs = options.timeoutMs ?? this.timeoutMs;
-    if (
-      !Number.isFinite(timeoutMs) ||
-      timeoutMs <= 0 ||
-      timeoutMs > 2_147_483_647
-    )
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 2_147_483_647)
       throw new TypeError("timeoutMs is invalid");
     const deadline = Date.now() + timeoutMs;
     await this.requireWorkspaceCapability({
@@ -372,15 +318,9 @@ export class Kallfi {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw new KallfiTimeoutError(timeoutMs);
     try {
-      return await this.performRequest<T>(
-        method,
-        path,
-        { ...options, timeoutMs: remaining },
-        "business",
-      );
+      return await this.performRequest<T>(method, path, { ...options, timeoutMs: remaining }, "business");
     } catch (error) {
-      if (error instanceof KallfiTimeoutError)
-        throw new KallfiTimeoutError(timeoutMs);
+      if (error instanceof KallfiTimeoutError) throw new KallfiTimeoutError(timeoutMs);
       throw error;
     }
   }
@@ -389,12 +329,7 @@ export class Kallfi {
     options: Pick<DetailedRequestOptions, "signal" | "timeoutMs">,
   ): Promise<void> {
     try {
-      const response = await this.performRequest<unknown>(
-        "GET",
-        "/v1/capabilities",
-        options,
-        "capability",
-      );
+      const response = await this.performRequest<unknown>("GET", "/v1/capabilities", options, "capability");
       const value = response.data;
       if (
         response.status !== 200 ||
@@ -427,8 +362,7 @@ export class Kallfi {
       )
         throw new KallfiWorkspaceUnsupportedError();
     } catch (error) {
-      if (error instanceof KallfiTimeoutError || options.signal?.aborted)
-        throw error;
+      if (error instanceof KallfiTimeoutError || options.signal?.aborted) throw error;
       throw new KallfiWorkspaceUnsupportedError();
     }
   }
@@ -443,11 +377,7 @@ export class Kallfi {
     if (!["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"].includes(verb))
       throw new TypeError("method is invalid");
     // Resolve only relative API paths: caller cannot redirect credentials or inject a selector header.
-    if (
-      !path.startsWith("/v1/") ||
-      path.startsWith("//") ||
-      /[\\#\r\n]/.test(path)
-    )
+    if (!path.startsWith("/v1/") || path.startsWith("//") || /[\\#\r\n]/.test(path))
       throw new TypeError("path must be an API path");
     rejectTraversal(path.split("?", 1)[0]!);
     const url = new URL(path, this.baseUrl);
@@ -462,11 +392,7 @@ export class Kallfi {
     )
       throw new TypeError("idempotencyKey is required for mutations");
     const timeoutMs = options.timeoutMs ?? this.timeoutMs;
-    if (
-      !Number.isFinite(timeoutMs) ||
-      timeoutMs <= 0 ||
-      timeoutMs > 2_147_483_647
-    )
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 2_147_483_647)
       throw new TypeError("timeoutMs is invalid");
     const controller = new AbortController();
     let timedOut = false;
@@ -481,15 +407,11 @@ export class Kallfi {
     if (purpose === "business") headers.Authorization = `Bearer ${this.apiKey}`;
     if (purpose === "business" && this.workspaceId !== undefined)
       headers["X-Kallfi-Workspace-ID"] = this.workspaceId;
-    const responseLimit =
-      purpose === "capability" ? 4096 : this.maxResponseBytes;
+    const responseLimit = purpose === "capability" ? 4096 : this.maxResponseBytes;
     if (mutation) headers["Idempotency-Key"] = options.idempotencyKey!;
-    if (options.body !== undefined)
-      headers["Content-Type"] = "application/json";
+    if (options.body !== undefined) headers["Content-Type"] = "application/json";
     const aborted = () =>
-      timedOut
-        ? new KallfiTimeoutError(timeoutMs)
-        : new KallfiNetworkError("Kallfi request was aborted");
+      timedOut ? new KallfiTimeoutError(timeoutMs) : new KallfiNetworkError("Kallfi request was aborted");
     const withAbort = async <R>(pending: Promise<R>): Promise<R> => {
       // Always attach Promise.race handlers, even if custom fetch synchronously aborted.
       let rejectAbort: (() => void) | undefined;
@@ -503,8 +425,7 @@ export class Kallfi {
       try {
         return await Promise.race([pending, cancellation]);
       } finally {
-        if (rejectAbort)
-          controller.signal.removeEventListener("abort", rejectAbort);
+        if (rejectAbort) controller.signal.removeEventListener("abort", rejectAbort);
       }
     };
     try {
@@ -513,10 +434,7 @@ export class Kallfi {
         this.fetcher(url.toString(), {
           method: verb,
           headers,
-          body:
-            options.body === undefined
-              ? undefined
-              : JSON.stringify(options.body),
+          body: options.body === undefined ? undefined : JSON.stringify(options.body),
           signal: controller.signal,
           redirect: "manual",
           cache: "no-store",
@@ -529,17 +447,11 @@ export class Kallfi {
       const retryAfter =
         retryRaw &&
         (/^\d{1,10}$/.test(retryRaw) ||
-          (/^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(
-            retryRaw,
-          ) &&
+          (/^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(retryRaw) &&
             Number.isFinite(Date.parse(retryRaw))))
           ? retryRaw
           : undefined;
-      const contentType = response.headers
-        .get("content-type")
-        ?.split(";", 1)[0]
-        ?.trim()
-        .toLowerCase();
+      const contentType = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
       let location: string | undefined;
       const rawLocation = response.headers.get("location");
       if (rawLocation && rawLocation.length <= 2048) {
@@ -558,6 +470,7 @@ export class Kallfi {
           /* no untrusted metadata */
         }
       }
+      const metadata = { status: response.status, requestId, retryAfter, location, contentType };
       const fail = (code: string) =>
         new KallfiApiError({
           status: response.status,
@@ -573,30 +486,18 @@ export class Kallfi {
       if (response.status === 204 || verb === "HEAD") {
         void response.body?.cancel().catch(() => undefined);
         if (!response.ok) throw fail("http_error");
-        return {
-          status: response.status,
-          data: undefined as T,
-          requestId,
-          retryAfter,
-          location,
-          contentType,
-        };
+        return { ...metadata, data: undefined as T };
       }
-      if (
-        contentType !== "application/json" &&
-        !contentType?.endsWith("+json")
-      ) {
-        void response.body?.cancel().catch(() => undefined);
-        throw fail("non_json_response");
+      const declaredLength = response.headers.get("content-length");
+      let rejectionCode: string | undefined;
+      if (contentType !== "application/json" && !contentType?.endsWith("+json")) {
+        rejectionCode = "non_json_response";
+      } else if (declaredLength && /^\d+$/.test(declaredLength) && Number(declaredLength) > responseLimit) {
+        rejectionCode = "response_too_large";
       }
-      const declared = response.headers.get("content-length");
-      if (
-        declared &&
-        /^\d+$/.test(declared) &&
-        Number(declared) > responseLimit
-      ) {
+      if (rejectionCode) {
         void response.body?.cancel().catch(() => undefined);
-        throw fail("response_too_large");
+        throw fail(rejectionCode);
       }
       const reader = response.body?.getReader();
       const chunks: Uint8Array[] = [];
@@ -614,8 +515,7 @@ export class Kallfi {
             chunks.push(part.value);
           }
         } finally {
-          if (controller.signal.aborted)
-            void reader.cancel().catch(() => undefined);
+          if (controller.signal.aborted) void reader.cancel().catch(() => undefined);
           reader.releaseLock();
         }
       }
@@ -628,26 +528,17 @@ export class Kallfi {
       let payload: unknown;
       try {
         payload = bytes
-          ? JSON.parse(
-              new TextDecoder("utf-8", { fatal: true }).decode(responseBytes),
-            )
+          ? JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(responseBytes))
           : undefined;
       } catch {
         throw fail("invalid_json_response");
       }
       if (!response.ok) {
-        const envelope =
-          payload && typeof payload === "object" && "error" in payload
-            ? (payload as { error: unknown }).error
-            : undefined;
-        const value =
-          envelope && typeof envelope === "object"
-            ? (envelope as Record<string, unknown>)
-            : undefined;
         const root =
-          payload && typeof payload === "object"
-            ? (payload as Record<string, unknown>)
-            : undefined;
+          payload && typeof payload === "object" ? (payload as Record<string, unknown>) : undefined;
+        const envelope = root?.error;
+        const value =
+          envelope && typeof envelope === "object" ? (envelope as Record<string, unknown>) : undefined;
         const safeErrorCode = (candidate: unknown): string | undefined =>
           typeof candidate === "string" &&
           /^[a-z][a-z0-9_]{0,95}$/.test(candidate) &&
@@ -656,24 +547,15 @@ export class Kallfi {
             : undefined;
         // Nested canonical envelopes retain precedence; never expose human prose/details.
         const code =
-          safeErrorCode(value?.code) ??
-          safeErrorCode(root?.code) ??
-          safeErrorCode(envelope) ??
-          "http_error";
-        const id =
-          typeof value?.request_id === "string"
-            ? token(value.request_id)
-            : requestId;
+          safeErrorCode(value?.code) ?? safeErrorCode(root?.code) ?? safeErrorCode(envelope) ?? "http_error";
+        const id = typeof value?.request_id === "string" ? token(value.request_id) : requestId;
         const outcomeValue = value?.outcome ?? root?.outcome;
         const outcome =
-          outcomeValue === "mutation_outcome_unknown" ||
-          outcomeValue === "read_projection_unavailable"
+          outcomeValue === "mutation_outcome_unknown" || outcomeValue === "read_projection_unavailable"
             ? outcomeValue
             : undefined;
-        const reconciliation =
-          value?.reconciliationRequired ?? root?.reconciliationRequired;
-        const retry =
-          value?.automaticRetryAllowed ?? root?.automaticRetryAllowed;
+        const reconciliation = value?.reconciliationRequired ?? root?.reconciliationRequired;
+        const retry = value?.automaticRetryAllowed ?? root?.automaticRetryAllowed;
         throw new KallfiApiError({
           status: response.status,
           code,
@@ -681,25 +563,13 @@ export class Kallfi {
           request_id: id,
           retry_after: retryAfter,
           outcome,
-          reconciliationRequired:
-            typeof reconciliation === "boolean" ? reconciliation : undefined,
+          reconciliationRequired: typeof reconciliation === "boolean" ? reconciliation : undefined,
           automaticRetryAllowed: typeof retry === "boolean" ? retry : undefined,
         });
       }
-      return {
-        status: response.status,
-        data: payload as T,
-        requestId,
-        retryAfter,
-        location,
-        contentType,
-      };
+      return { ...metadata, data: payload as T };
     } catch (error) {
-      if (
-        error instanceof KallfiApiError ||
-        error instanceof KallfiNetworkError
-      )
-        throw error;
+      if (error instanceof KallfiApiError || error instanceof KallfiNetworkError) throw error;
       if (controller.signal.aborted) throw aborted();
       throw new KallfiNetworkError("Kallfi request failed");
     } finally {
@@ -715,21 +585,13 @@ export class SourceAssetsResource {
     body: SourceAssetCreateRequest,
     options: MutationOptions | string,
   ): Promise<SourceAssetAcceptedResponse> {
-    return this.client.request(
-      "POST",
-      "/v1/soul-source-assets",
-      body,
-      mutationKey(options),
-    );
+    return this.client.request("POST", "/v1/soul-source-assets", body, mutationKey(options));
   }
 }
 
 export class SoulsResource {
   constructor(private readonly client: Kallfi) {}
-  create(
-    body: SoulCreateRequest,
-    options: MutationOptions | string,
-  ): Promise<SoulAcceptedResponse> {
+  create(body: SoulCreateRequest, options: MutationOptions | string): Promise<SoulAcceptedResponse> {
     return this.client.request("POST", "/v1/souls", body, mutationKey(options));
   }
   retrieve(soulId: string): Promise<Soul> {
@@ -740,24 +602,14 @@ export class SoulsResource {
     body: SoulUpdateRequest,
     options: MutationOptions | string,
   ): Promise<SoulUpdateAcceptedResponse> {
-    return this.client.request(
-      "PATCH",
-      `/v1/souls/${encoded(soulId)}`,
-      body,
-      mutationKey(options),
-    );
+    return this.client.request("PATCH", `/v1/souls/${encoded(soulId)}`, body, mutationKey(options));
   }
   createResponse(
     soulId: string,
     body: import("./generated.js").ResponseCreateRequest,
     options: MutationOptions | string,
   ): Promise<OperationAcceptedResponse> {
-    return this.client.request(
-      "POST",
-      `/v1/souls/${encoded(soulId)}/responses`,
-      body,
-      mutationKey(options),
-    );
+    return this.client.request("POST", `/v1/souls/${encoded(soulId)}/responses`, body, mutationKey(options));
   }
   createGeneration(
     soulId: string,
@@ -779,45 +631,30 @@ export class OperationsResource {
     return this.client.request("GET", `/v1/operations/${encoded(operationId)}`);
   }
 
-  async wait(
-    operationId: string,
-    options: WaitOptions = {},
-  ): Promise<Operation> {
+  async wait(operationId: string, options: WaitOptions = {}): Promise<Operation> {
     const timeoutMs = options.timeoutMs ?? 120_000;
     const intervalMs = options.intervalMs ?? 2_000;
-    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0)
-      throw new TypeError("timeoutMs must be positive");
-    if (
-      !Number.isFinite(intervalMs) ||
-      intervalMs < 100 ||
-      intervalMs > 30_000
-    ) {
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new TypeError("timeoutMs must be positive");
+    if (!Number.isFinite(intervalMs) || intervalMs < 100 || intervalMs > 30_000) {
       throw new TypeError("intervalMs must be between 100 and 30000");
     }
 
     const deadline = Date.now() + timeoutMs;
-    const terminal = new Set<Operation["status"]>([
-      "succeeded",
-      "failed",
-      "canceled",
-    ]);
+    const terminal = new Set<Operation["status"]>(["succeeded", "failed", "canceled"]);
     for (;;) {
-      if (options.signal?.aborted)
-        throw new KallfiNetworkError("Operation wait was aborted");
+      if (options.signal?.aborted) throw new KallfiNetworkError("Operation wait was aborted");
       const budget = deadline - Date.now();
       if (budget <= 0) throw new KallfiTimeoutError(timeoutMs);
       let operation: Operation;
       try {
         operation = (
-          await this.client.requestDetailed<Operation>(
-            "GET",
-            `/v1/operations/${encoded(operationId)}`,
-            { signal: options.signal, timeoutMs: budget },
-          )
+          await this.client.requestDetailed<Operation>("GET", `/v1/operations/${encoded(operationId)}`, {
+            signal: options.signal,
+            timeoutMs: budget,
+          })
         ).data;
       } catch (error) {
-        if (error instanceof KallfiTimeoutError)
-          throw new KallfiTimeoutError(timeoutMs);
+        if (error instanceof KallfiTimeoutError) throw new KallfiTimeoutError(timeoutMs);
         throw error;
       }
       if (Date.now() >= deadline) throw new KallfiTimeoutError(timeoutMs);
@@ -825,8 +662,7 @@ export class OperationsResource {
       const remaining = deadline - Date.now();
       await new Promise<void>((resolve, reject) => {
         let timer: ReturnType<typeof setTimeout>;
-        const cleanup = () =>
-          options.signal?.removeEventListener("abort", onAbort);
+        const cleanup = () => options.signal?.removeEventListener("abort", onAbort);
         const onAbort = () => {
           clearTimeout(timer);
           cleanup();
