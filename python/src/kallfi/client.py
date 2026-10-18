@@ -336,6 +336,28 @@ def _detailed(response: httpx.Response, content: bytes) -> APIResponse:
     )
 
 
+def _read_response(response: httpx.Response, deadline: float, limit: int) -> bytes:
+    content = bytearray()
+    for chunk in response.iter_bytes():
+        _check_deadline(deadline)
+        if len(content) + len(chunk) > limit:
+            raise KallfiTransportError("Kallfi response exceeded the configured limit")
+        content.extend(chunk)
+    _check_deadline(deadline)
+    return bytes(content)
+
+
+async def _read_async_response(response: httpx.Response, deadline: float, limit: int) -> bytes:
+    content = bytearray()
+    async for chunk in response.aiter_bytes():
+        _check_deadline(deadline)
+        if len(content) + len(chunk) > limit:
+            raise KallfiTransportError("Kallfi response exceeded the configured limit")
+        content.extend(chunk)
+    _check_deadline(deadline)
+    return bytes(content)
+
+
 class _SyncTransport:
     def __init__(
         self, client: httpx.Client, preflight: Callable[[], float], headers: dict[str, str]
@@ -352,16 +374,10 @@ class _SyncTransport:
             with self.client.stream(
                 method, path, follow_redirects=False, auth=None, timeout=remaining, **kwargs
             ) as response:
-                content = bytearray()
-                for chunk in response.iter_bytes():
-                    _check_deadline(deadline)
-                    if len(content) + len(chunk) > 8 * 1024 * 1024:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    content.extend(chunk)
-                _check_deadline(deadline)
+                content = _read_response(response, deadline, 8 * 1024 * 1024)
                 return _decode(
                     httpx.Response(
-                        response.status_code, headers=response.headers, content=bytes(content)
+                        response.status_code, headers=response.headers, content=content
                     ),
                     model,
                 )
@@ -540,14 +556,8 @@ class Kallfi:
                 timeout=remaining,
                 **kwargs,
             ) as response:
-                chunks = bytearray()
-                for chunk in response.iter_bytes():
-                    _check_deadline(deadline)
-                    if len(chunks) + len(chunk) > max_response_bytes:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    chunks.extend(chunk)
-                _check_deadline(deadline)
-                return _detailed(response, bytes(chunks))
+                content = _read_response(response, deadline, max_response_bytes)
+                return _detailed(response, content)
         except httpx.TimeoutException as error:
             raise KallfiTimeoutError("Kallfi request timed out") from error
         except httpx.HTTPError as error:
@@ -602,16 +612,10 @@ class _AsyncTransport:
             async with self.client.stream(
                 method, path, follow_redirects=False, auth=None, timeout=remaining, **kwargs
             ) as response:
-                content = bytearray()
-                async for chunk in response.aiter_bytes():
-                    _check_deadline(deadline)
-                    if len(content) + len(chunk) > 8 * 1024 * 1024:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    content.extend(chunk)
-                _check_deadline(deadline)
+                content = await _read_async_response(response, deadline, 8 * 1024 * 1024)
                 return _decode(
                     httpx.Response(
-                        response.status_code, headers=response.headers, content=bytes(content)
+                        response.status_code, headers=response.headers, content=content
                     ),
                     model,
                 )
@@ -824,14 +828,8 @@ class AsyncKallfi:
                 timeout=remaining,
                 **kwargs,
             ) as response:
-                chunks = bytearray()
-                async for chunk in response.aiter_bytes():
-                    _check_deadline(deadline)
-                    if len(chunks) + len(chunk) > max_response_bytes:
-                        raise KallfiTransportError("Kallfi response exceeded the configured limit")
-                    chunks.extend(chunk)
-                _check_deadline(deadline)
-                return _detailed(response, bytes(chunks))
+                content = await _read_async_response(response, deadline, max_response_bytes)
+                return _detailed(response, content)
         except httpx.TimeoutException as error:
             raise KallfiTimeoutError("Kallfi request timed out") from error
         except httpx.HTTPError as error:
