@@ -42,7 +42,7 @@ The original typed Soul resources remain available. Operation responses now use
 `operation.root.status`, because the canonical operation is a shared/surface union.
 
 `call(operation_id, body=..., path_params=..., query=..., idempotency_key=...)`
-accepts all 61 operation IDs in the bundled canonical OpenAPI snapshot. It returns
+accepts all 66 operation IDs in the bundled canonical OpenAPI snapshot. It returns
 `APIResponse` containing status, parsed JSON data, request ID, Retry-After,
 Location and Content-Type. Responses are bounded to 8 MiB by default; configure
 `max_response_bytes` per call. HTTP errors raise `KallfiAPIError`; malformed JSON,
@@ -136,3 +136,19 @@ publication or new hosted journey acceptance.
 ### Account API hosts
 
 Account-scoped `call()` operations use `https://kallfi.com/api/v1` or `https://kallfi.red/api/v1` by default. Explicit trusted `base_url` selection is preserved. Legacy Enterprise resources default to `https://api.kallfi.com/v1` or `https://api.kallfi.red/v1`; the main hosts expose account operations only. Suspended dashboard hosts are not re-enabled by this client change. Source tests do not prove hosted availability.
+
+### Uploaded generation references
+
+SDK 0.3.6 adds the Account reference-preflight operation. Pass canonical uploaded reference values from your upload flow:
+
+```python
+from uuid import uuid4
+
+admission = client.call(
+    "prepareAccountPostGenerationReferences",
+    body={"body": {"version": 1, "references": uploaded_references}},
+    idempotency_key=str(uuid4()),
+)
+```
+
+Retain the returned receipt unchanged. Pending admission requires the canonical receipt read mode; it is not accepted admission or generation completion. The operation does not launch generation and requires the matching main API release.

@@ -1,6 +1,6 @@
 /* eslint-disable */
 // GENERATED FILE. Do not edit by hand; run `npm run generate`.
-// OpenAPI snapshot SHA-256: 41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784
+// OpenAPI snapshot SHA-256: 2f70c5fa2db0b1d0015043e09eafbae494d4af4f02cfcbdfcf5a00c055d21b65
 
 export interface ErrorResponse {
   "error": {
@@ -1427,4 +1427,16 @@ export interface GetAccountPostPublicationStatusRequest {
   "query": {
   "id": string;
 };
+}
+
+export interface PrepareAccountPostGenerationReferencesRequest {
+  "body"?: {
+  "version": 1;
+  "references": ReadonlyArray<Record<string, unknown>>;
+  "outputOwnerEntityId"?: string;
+  "receipt"?: Record<string, unknown>;
+  "mode"?: "read" | "prepare";
+  "retainedOriginalRequestId"?: string;
+};
+  "query"?: Record<string, unknown>;
 }

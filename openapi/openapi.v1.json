@@ -5983,6 +5983,82 @@
         },
         "x-kallfi-command-scope": "account"
       }
+    },
+    "/v1/account/actions/prepareAccountPostGenerationReferences": {
+      "post": {
+        "operationId": "prepareAccountPostGenerationReferences",
+        "tags": [
+          "Account product actions"
+        ],
+        "summary": "Prepare uploaded Post generation references",
+        "description": "Account Post reference preflight delegates unchanged to the canonical POST /api/generate/reference-preflight owner. Required credential scope: a_to_z.manage. Actor, workspace and web surface come from the authenticated Account dispatcher. Supply the canonical version, references, output owner and retained receipt fields; ownership, safety, package scope and receipt freshness remain canonical. A pending receipt is not accepted reference admission or generation completion.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+          },
+          {
+            "name": "X-Kallfi-Workspace-ID",
+            "in": "header",
+            "required": false,
+            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrepareAccountPostGenerationReferencesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unchanged canonical receipt, admitted media and referenceSafetyState. Only accepted state establishes current reference admission; preparation is not generation launch or terminal output.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Canonical durable command acceptance; terminal output requires normal observation."
+          },
+          "400": {
+            "description": "Canonical input/revision/receipt or finite query validation failure."
+          },
+          "401": {
+            "description": "Credential/scope/grant/issuer/surface admission denied."
+          },
+          "403": {
+            "description": "Canonical product/safety/ownership admission denied."
+          },
+          "409": {
+            "description": "Canonical pending reference admission or stale/scope/revision receipt conflict; retain returned receipt and use the canonical read mode rather than retrying classification."
+          },
+          "429": {
+            "description": "Canonical rate/allowance limit."
+          },
+          "503": {
+            "description": "Canonical owner unavailable; no terminal success claimed."
+          }
+        },
+        "x-kallfi-command-scope": "account"
+      }
     }
   },
   "components": {
@@ -13358,6 +13434,61 @@
                 "format": "uuid"
               }
             }
+          }
+        }
+      },
+      "PrepareAccountPostGenerationReferencesRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "type": "object",
+            "description": "Unmodified canonical reference-preflight body. The existing handler owns input parsing, preparation versus read semantics, authorization, safety and receipt validation. A supplied receipt is re-read and never starts another classification.",
+            "properties": {
+              "version": {
+                "type": "integer",
+                "enum": [
+                  1
+                ]
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Current canonical uploaded-asset CreatorCreateReference values; the product parser retains bounded ownership and selection validation."
+              },
+              "outputOwnerEntityId": {
+                "type": "string",
+                "format": "uuid",
+                "nullable": true
+              },
+              "receipt": {
+                "type": "object",
+                "description": "Opaque exact canonical reference-preflight receipt, including pending locators where returned."
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "prepare"
+                ]
+              },
+              "retainedOriginalRequestId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "version",
+              "references"
+            ]
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
           }
         }
       }
