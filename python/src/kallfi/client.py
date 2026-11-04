@@ -234,7 +234,14 @@ def _configuration(
         raise ValueError("surface must be nsfw-disabled or nsfw-enabled")
     origin = base_url or origins[surface]
     parsed = urlparse(origin)
-    trusted = {"kallfi.com", "kallfi.red", "acr.kallfi.com", "acr.kallfi.red", "api.kallfi.com", "api.kallfi.red"}
+    trusted = {
+        "kallfi.com",
+        "kallfi.red",
+        "acr.kallfi.com",
+        "acr.kallfi.red",
+        "api.kallfi.com",
+        "api.kallfi.red",
+    }
     if parsed.scheme not in {"http", "https"} or not parsed.hostname:
         raise ValueError("base_url must be an HTTP origin")
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
@@ -552,7 +559,12 @@ class Kallfi:
         if max_response_bytes <= 0:
             raise ValueError("max_response_bytes must be positive")
         method, path, kwargs = _command(
-            operation_id, self._workspace_id, path_params, body, idempotency_key, self._account_origin
+            operation_id,
+            self._workspace_id,
+            path_params,
+            body,
+            idempotency_key,
+            self._account_origin,
         )
         response, content = self._transport.send(
             method, path, max_response_bytes, params=query, **kwargs
@@ -818,7 +830,12 @@ class AsyncKallfi:
         if max_response_bytes <= 0:
             raise ValueError("max_response_bytes must be positive")
         method, path, kwargs = _command(
-            operation_id, self._workspace_id, path_params, body, idempotency_key, self._account_origin
+            operation_id,
+            self._workspace_id,
+            path_params,
+            body,
+            idempotency_key,
+            self._account_origin,
         )
         response, content = await self._transport.send(
             method, path, max_response_bytes, params=query, **kwargs
