@@ -1,6 +1,6 @@
 /* eslint-disable */
 // GENERATED FILE. Do not edit by hand; run `npm run generate`.
-// OpenAPI snapshot SHA-256: 742fe946d29ef7e286eead3c8cea50a8a344793b2136f843655f896daea1d99b
+// OpenAPI snapshot SHA-256: 41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784
 
 export interface ErrorResponse {
   "error": {
@@ -1389,4 +1389,42 @@ export interface DeleteAccountSoulRequest {
 
 export interface GetAccountSoulDeletionStatusRequest {
   "query": AccountSoulDeletionStatusQuery;
+}
+
+export interface GetAccountPostRequest {
+  "body"?: Record<string, unknown>;
+  "query": {
+  "id": string;
+  "includeComments"?: "true" | "false";
+};
+}
+
+export interface UpdateAccountPostRequest {
+  "body"?: {
+  "caption"?: string;
+  "isDraft"?: boolean;
+  "isPrivate"?: boolean;
+  "privateAccessMode"?: "subscription" | "ppv" | "both";
+  "ppvCostGems"?: number;
+  "action"?: "return_to_draft";
+};
+  "query": {
+  "id": string;
+};
+}
+
+export interface DeleteAccountPostRequest {
+  "body"?: {
+  "action"?: "delete" | "schedule_when_sponsorship_ends";
+};
+  "query": {
+  "id": string;
+};
+}
+
+export interface GetAccountPostPublicationStatusRequest {
+  "body"?: Record<string, unknown>;
+  "query": {
+  "id": string;
+};
 }

@@ -18,7 +18,7 @@ test('all canonical operations dispatch generated method/path/body only through 
   assert.equal(result.status,200);assert.equal(calls.length,1);
   assert.equal(calls[0]!.init.method,operation.method);assert.equal(calls[0]!.init.redirect,'manual');
   let expected:string=operation.path;for(const [name,value] of Object.entries(path))expected=expected.replace(`{${name}}`,encodeURIComponent(value));
-  assert.equal(calls[0]!.url,'https://acr.kallfi.com'+expected);
+  assert.equal(calls[0]!.url,(operation.scope === 'account' ? 'https://kallfi.com/api' : 'https://acr.kallfi.com')+expected);
   if(operation.bodyRequired)assert.equal(calls[0]!.init.body,JSON.stringify({fixture:true}));
   if(operation.method!=='GET')assert.equal((calls[0]!.init.headers as Record<string,string>)['Idempotency-Key'],'fixed-intent');
  }

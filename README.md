@@ -48,3 +48,7 @@ For API access or account help, use the support options in Kallfi. Never include
 ## License
 
 MIT. See [LICENSE](./LICENSE).
+
+### Account API hosts
+
+Account-scoped `operation()` calls use `https://kallfi.com/api/v1` or `https://kallfi.red/api/v1` by default. The ACR dashboard hosts remain suspended. Legacy Enterprise resources keep their existing ACR origin and are not exposed on the main hosts. An explicit `baseUrl` preserves the selected trusted host; selecting a main host admits account operations only. Surface matching, no redirects, caller-owned mutation idempotency and authoritative lifecycle state remain unchanged. These source changes require package publication and a hosted API release before they establish runtime availability.

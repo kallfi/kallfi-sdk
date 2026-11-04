@@ -29,7 +29,7 @@ def test_contract_drift():
         if isinstance(o, dict) and "operationId" in o
     }
     assert actual == {(o["operationId"], o["method"], o["path"]) for o in manifest["operations"]}
-    assert len(actual) == 61
+    assert len(actual) == 65
 
 
 def test_surface_workspace_and_account_rejection():
@@ -157,6 +157,11 @@ def test_every_operation_uses_canonical_route_and_single_request(operation):
     expected = operation["path"]
     for name in params:
         expected = expected.replace("{" + name + "}", "resource%2Fa")
+    if operation["scope"] == "account":
+        expected = "/api" + expected
+        assert seen[0].url.host == "kallfi.com"
+    else:
+        assert seen[0].url.host == "acr.kallfi.com"
     assert seen[0].url.raw_path == expected.encode()
 
 

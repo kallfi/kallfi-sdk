@@ -234,7 +234,7 @@ def _configuration(
         raise ValueError("surface must be nsfw-disabled or nsfw-enabled")
     origin = base_url or origins[surface]
     parsed = urlparse(origin)
-    trusted = {"acr.kallfi.com", "acr.kallfi.red", "api.kallfi.com", "api.kallfi.red"}
+    trusted = {"kallfi.com", "kallfi.red", "acr.kallfi.com", "acr.kallfi.red", "api.kallfi.com", "api.kallfi.red"}
     if parsed.scheme not in {"http", "https"} or not parsed.hostname:
         raise ValueError("base_url must be an HTTP origin")
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
@@ -291,6 +291,7 @@ def _command(
     path_params: Optional[dict[str, str]],
     body: Any,
     idempotency_key: Optional[str],
+    account_origin: str,
 ) -> tuple[str, str, dict[str, Any]]:
     if operation_id not in _OPERATIONS:
         raise ValueError("Unknown Kallfi operation")
@@ -315,6 +316,9 @@ def _command(
         kwargs["json"] = (
             body.model_dump(mode="json", exclude_none=True) if isinstance(body, BaseModel) else body
         )
+    if operation["scope"] == "account":
+        prefix = "/api" if urlparse(account_origin).hostname in {"kallfi.com", "kallfi.red"} else ""
+        path = account_origin + prefix + path
     return operation["method"], path, kwargs
 
 
@@ -375,6 +379,8 @@ class _SyncTransport:
     def send(
         self, method: str, path: str, max_response_bytes: int, **kwargs: Any
     ) -> tuple[httpx.Response, bytes]:
+        if self.client.base_url.host in {"kallfi.com", "kallfi.red"} and path.startswith("/v1/"):
+            raise ValueError("Main Kallfi hosts support account operations only")
         remaining = self.preflight()
         deadline = time.monotonic() + remaining
         kwargs["headers"] = {**self.headers, **kwargs.get("headers", {})}
@@ -502,6 +508,9 @@ class Kallfi:
     ) -> None:
         if not api_key.strip():
             raise ValueError("api_key is required")
+        self._account_origin = base_url.rstrip("/") if base_url else (
+            "https://kallfi.com" if surface == "nsfw-disabled" else "https://kallfi.red"
+        )
         base_url, headers = _configuration(api_key, base_url, surface, workspace_id)
         if http_client is not None and str(http_client.base_url).rstrip("/") != base_url:
             raise ValueError("http_client base_url must match the selected API origin")
@@ -543,7 +552,7 @@ class Kallfi:
         if max_response_bytes <= 0:
             raise ValueError("max_response_bytes must be positive")
         method, path, kwargs = _command(
-            operation_id, self._workspace_id, path_params, body, idempotency_key
+            operation_id, self._workspace_id, path_params, body, idempotency_key, self._account_origin
         )
         response, content = self._transport.send(
             method, path, max_response_bytes, params=query, **kwargs
@@ -600,6 +609,8 @@ class _AsyncTransport:
     async def send(
         self, method: str, path: str, max_response_bytes: int, **kwargs: Any
     ) -> tuple[httpx.Response, bytes]:
+        if self.client.base_url.host in {"kallfi.com", "kallfi.red"} and path.startswith("/v1/"):
+            raise ValueError("Main Kallfi hosts support account operations only")
         remaining = await self.preflight()
         deadline = time.monotonic() + remaining
         kwargs["headers"] = {**self.headers, **kwargs.get("headers", {})}
@@ -729,6 +740,9 @@ class AsyncKallfi:
     ) -> None:
         if not api_key.strip():
             raise ValueError("api_key is required")
+        self._account_origin = base_url.rstrip("/") if base_url else (
+            "https://kallfi.com" if surface == "nsfw-disabled" else "https://kallfi.red"
+        )
         base_url, headers = _configuration(api_key, base_url, surface, workspace_id)
         if http_client is not None and str(http_client.base_url).rstrip("/") != base_url:
             raise ValueError("http_client base_url must match the selected API origin")
@@ -804,7 +818,7 @@ class AsyncKallfi:
         if max_response_bytes <= 0:
             raise ValueError("max_response_bytes must be positive")
         method, path, kwargs = _command(
-            operation_id, self._workspace_id, path_params, body, idempotency_key
+            operation_id, self._workspace_id, path_params, body, idempotency_key, self._account_origin
         )
         response, content = await self._transport.send(
             method, path, max_response_bytes, params=query, **kwargs

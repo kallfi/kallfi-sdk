@@ -2405,6 +2405,86 @@ class GetAccountSoulDeletionStatusRequest(BaseModel):
     query: AccountSoulDeletionStatusQuery
 
 
+class IncludeComments(Enum):
+    true = "true"
+    false = "false"
+
+
+class Query13(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID
+    includeComments: Optional[IncludeComments] = None
+
+
+class GetAccountPostRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    body: Optional[dict[str, Any]] = None
+    query: Query13
+
+
+class PrivateAccessMode(Enum):
+    subscription = "subscription"
+    ppv = "ppv"
+    both = "both"
+
+
+class Action(Enum):
+    return_to_draft = "return_to_draft"
+
+
+class Body14(BaseModel):
+    caption: Optional[str] = None
+    isDraft: Optional[bool] = None
+    isPrivate: Optional[bool] = None
+    privateAccessMode: Optional[PrivateAccessMode] = None
+    ppvCostGems: Optional[float] = None
+    action: Optional[Action] = None
+
+
+class Query14(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID
+
+
+class UpdateAccountPostRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    body: Optional[Body14] = None
+    query: Query14
+
+
+class Action1(Enum):
+    delete = "delete"
+    schedule_when_sponsorship_ends = "schedule_when_sponsorship_ends"
+
+
+class Body15(BaseModel):
+    action: Optional[Action1] = None
+
+
+class DeleteAccountPostRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    body: Optional[Body15] = None
+    query: Query14
+
+
+class GetAccountPostPublicationStatusRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    body: Optional[dict[str, Any]] = None
+    query: Query14
+
+
 class MediaLocator(RootModel[Union[DirectImageLocator, ExpiringMediaLocator]]):
     root: Union[DirectImageLocator, ExpiringMediaLocator] = Field(
         ...,

@@ -174,7 +174,7 @@ function responseMetadata(response: Response, baseUrl: string) {
       const target = new URL(rawLocation, baseUrl);
       if (
         target.origin === baseUrl &&
-        target.pathname.startsWith("/v1/") &&
+        (target.pathname.startsWith("/v1/") || target.pathname.startsWith("/api/v1/")) &&
         !target.search &&
         !target.hash &&
         !target.username &&
@@ -232,6 +232,7 @@ export class Kallfi {
   readonly souls: SoulsResource;
   readonly operations: OperationsResource;
   private readonly baseUrl: string;
+  private readonly accountBaseUrl: string;
   private readonly apiKey: string;
   private readonly fetcher: FetchLike;
   private readonly timeoutMs: number;
@@ -242,6 +243,8 @@ export class Kallfi {
     if (!options.apiKey?.trim()) throw new TypeError("apiKey is required");
     this.apiKey = options.apiKey;
     const knownOrigins: Record<string, KallfiSurface> = {
+      "https://kallfi.com": "nsfw-disabled",
+      "https://kallfi.red": "nsfw-enabled",
       "https://acr.kallfi.com": "nsfw-disabled",
       "https://acr.kallfi.red": "nsfw-enabled",
       "https://api.kallfi.com": "nsfw-disabled",
@@ -271,6 +274,8 @@ export class Kallfi {
       throw new TypeError("baseUrl must match the selected canonical surface");
     }
     this.baseUrl = base.origin;
+    this.accountBaseUrl =
+      supplied?.origin ?? (surface === "nsfw-disabled" ? "https://kallfi.com" : "https://kallfi.red");
     if (
       options.workspaceId !== undefined &&
       !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(options.workspaceId)
@@ -358,7 +363,16 @@ export class Kallfi {
     if (!operation.bodyAllowed && args.body !== undefined)
       throw new TypeError("Operation does not accept a request body");
     const suffix = encodedQuery.toString();
-    return this.requestDetailed<T>(operation.method, suffix ? `${path}?${suffix}` : path, {
+    const requestPath = suffix ? `${path}?${suffix}` : path;
+    if (operation.scope === "account") {
+      return this.performRequest<T>(
+        operation.method,
+        requestPath,
+        { ...options, body: args.body },
+        "account",
+      );
+    }
+    return this.requestDetailed<T>(operation.method, requestPath, {
       body: args.body,
       idempotencyKey: options.idempotencyKey,
       signal: options.signal,
@@ -440,7 +454,7 @@ export class Kallfi {
     method: string,
     path: string,
     options: DetailedRequestOptions,
-    purpose: "business" | "capability",
+    purpose: "business" | "capability" | "account",
   ): Promise<DetailedResponse<T>> {
     const verb = method.toUpperCase();
     if (!["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"].includes(verb))
@@ -449,8 +463,12 @@ export class Kallfi {
     if (!path.startsWith("/v1/") || path.startsWith("//") || /[\\#\r\n]/.test(path))
       throw new TypeError("path must be an API path");
     rejectTraversal(path.split("?", 1)[0]!);
-    const url = new URL(path, this.baseUrl);
-    if (url.origin !== this.baseUrl || !url.pathname.startsWith("/v1/"))
+    const origin = purpose === "account" ? this.accountBaseUrl : this.baseUrl;
+    const mainHost = origin === "https://kallfi.com" || origin === "https://kallfi.red";
+    if (mainHost && purpose !== "account")
+      throw new TypeError("Main Kallfi hosts support account operations only");
+    const url = new URL(mainHost ? `/api${path}` : path, origin);
+    if (url.origin !== origin || !url.pathname.startsWith(mainHost ? "/api/v1/" : "/v1/"))
       throw new TypeError("path is invalid");
     const mutation = verb !== "GET" && verb !== "HEAD";
     if (
@@ -473,7 +491,7 @@ export class Kallfi {
       controller.abort();
     }, timeoutMs);
     const headers: Record<string, string> = { Accept: "application/json" };
-    if (purpose === "business") headers.Authorization = `Bearer ${this.apiKey}`;
+    if (purpose !== "capability") headers.Authorization = `Bearer ${this.apiKey}`;
     if (purpose === "business" && this.workspaceId !== undefined)
       headers["X-Kallfi-Workspace-ID"] = this.workspaceId;
     const responseLimit = purpose === "capability" ? 4096 : this.maxResponseBytes;
@@ -509,7 +527,7 @@ export class Kallfi {
           cache: "no-store",
         }),
       );
-      const metadata = responseMetadata(response, this.baseUrl);
+      const metadata = responseMetadata(response, origin);
       const { requestId, retryAfter, contentType } = metadata;
       const fail = (code: string) =>
         new KallfiApiError({

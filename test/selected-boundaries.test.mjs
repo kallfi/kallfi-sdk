@@ -23,7 +23,7 @@ test('funding preparation and explicit commit preserve one intent and exact opaq
   assert.equal(calls.length,2);
   assert.deepEqual(calls[1].body,{body:{entityId:entity,quote}});
   for(const call of calls) assert.equal(call.headers['Idempotency-Key'],intent);
-  assert.equal(calls[1].url,'https://acr.kallfi.com/v1/account/actions/commitAccountSoulMessageBudget');
+  assert.equal(calls[1].url,'https://kallfi.com/api/v1/account/actions/commitAccountSoulMessageBudget');
 });
 
 test('deletion receipt read uses its dedicated operation and original intent without generation lookup', async () => {
@@ -36,7 +36,7 @@ test('deletion receipt read uses its dedicated operation and original intent wit
   const result=await client.operation('getAccountSoulDeletionStatus',
     {body:{query:{entityId:entity,requestId}}},{idempotencyKey:intent});
   assert.equal(calls.length,1);
-  assert.equal(calls[0].url,'https://acr.kallfi.com/v1/account/actions/getAccountSoulDeletionStatus');
+  assert.equal(calls[0].url,'https://kallfi.com/api/v1/account/actions/getAccountSoulDeletionStatus');
   assert.equal(calls[0].init.headers['Idempotency-Key'],intent);
   assert.deepEqual(JSON.parse(calls[0].init.body),{query:{entityId:entity,requestId}});
   assert.equal(result.data.deletion.state,'pending');

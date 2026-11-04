@@ -132,3 +132,7 @@ The canonical settings operation is explicitly non-read-only. The SDK catalog
 checksum follows that owner metadata; request/response schemas, methods, paths
 and Python runtime behavior are unchanged. This candidate does not imply
 publication or new hosted journey acceptance.
+
+### Account API hosts
+
+Account-scoped `call()` operations use `https://kallfi.com/api/v1` or `https://kallfi.red/api/v1` by default. Explicit trusted `base_url` selection is preserved. Legacy Enterprise resources retain their existing ACR routes; the main hosts expose account operations only. Suspended dashboard hosts are not re-enabled by this client change. Source tests do not prove hosted availability.
