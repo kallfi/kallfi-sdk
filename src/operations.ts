@@ -1,5 +1,5 @@
 // GENERATED FILE. Do not edit; run npm run generate.
-// OpenAPI snapshot SHA-256: 41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784
+// OpenAPI snapshot SHA-256: 2f70c5fa2db0b1d0015043e09eafbae494d4af4f02cfcbdfcf5a00c055d21b65
 export const KALLFI_OPERATIONS = {
   "createSoulSourceAsset": {
     "method": "POST",
@@ -684,6 +684,16 @@ export const KALLFI_OPERATIONS = {
   "getAccountPostPublicationStatus": {
     "method": "POST",
     "path": "/v1/account/actions/getAccountPostPublicationStatus",
+    "scope": "account",
+    "pathParameters": [],
+    "queryParameters": [],
+    "bodyAllowed": true,
+    "bodyRequired": true,
+    "idempotencyRequired": true
+  },
+  "prepareAccountPostGenerationReferences": {
+    "method": "POST",
+    "path": "/v1/account/actions/prepareAccountPostGenerationReferences",
     "scope": "account",
     "pathParameters": [],
     "queryParameters": [],

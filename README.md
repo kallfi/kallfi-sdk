@@ -1,6 +1,6 @@
 # Kallfi JavaScript SDK
 
-Typed, server-side JavaScript and TypeScript client for the Kallfi API. Supports the canonical 61-operation API with generated request and response types.
+Typed, server-side JavaScript and TypeScript client for the Kallfi API. Supports the canonical 66-operation API with generated request and response types.
 
 ## Install
 
@@ -52,3 +52,15 @@ MIT. See [LICENSE](./LICENSE).
 ### Account API hosts
 
 Account-scoped `operation()` calls use `https://kallfi.com/api/v1` or `https://kallfi.red/api/v1` by default. The ACR dashboard hosts remain suspended. Legacy Enterprise resources default to `https://api.kallfi.com/v1` or `https://api.kallfi.red/v1` and are not exposed on the main hosts. An explicit `baseUrl` preserves the selected trusted host; selecting a main host admits account operations only. Surface matching, no redirects, caller-owned mutation idempotency and authoritative lifecycle state remain unchanged. These source changes require package publication and a hosted API release before they establish runtime availability.
+
+### Uploaded generation references
+
+SDK 0.3.6 adds the Account reference-preflight operation. Use the canonical uploaded reference values from your upload flow:
+
+```ts
+const admission = await kallfi.operation("prepareAccountPostGenerationReferences", {
+  body: { body: { version: 1, references: uploadedReferences } },
+}, { idempotencyKey: crypto.randomUUID() });
+```
+
+Retain the returned receipt unchanged. A pending response is not accepted reference admission; use the canonical receipt read mode and wait for acceptance before requesting generation. This call does not launch generation. Availability requires the matching main API release.

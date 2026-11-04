@@ -2485,6 +2485,44 @@ class GetAccountPostPublicationStatusRequest(BaseModel):
     query: Query14
 
 
+class Version2(Enum):
+    integer_1 = 1
+
+
+class Mode1(Enum):
+    read = "read"
+    prepare = "prepare"
+
+
+class Body16(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    version: Version2
+    references: list[dict[str, Any]] = Field(
+        ...,
+        description="Current canonical uploaded-asset CreatorCreateReference values; the product parser retains bounded ownership and selection validation.",
+    )
+    outputOwnerEntityId: Optional[UUID] = None
+    receipt: Optional[dict[str, Any]] = Field(
+        None,
+        description="Opaque exact canonical reference-preflight receipt, including pending locators where returned.",
+    )
+    mode: Optional[Mode1] = None
+    retainedOriginalRequestId: Optional[UUID] = None
+
+
+class PrepareAccountPostGenerationReferencesRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    body: Optional[Body16] = Field(
+        None,
+        description="Unmodified canonical reference-preflight body. The existing handler owns input parsing, preparation versus read semantics, authorization, safety and receipt validation. A supplied receipt is re-read and never starts another classification.",
+    )
+    query: Optional[dict[str, Any]] = None
+
+
 class MediaLocator(RootModel[Union[DirectImageLocator, ExpiringMediaLocator]]):
     root: Union[DirectImageLocator, ExpiringMediaLocator] = Field(
         ...,
