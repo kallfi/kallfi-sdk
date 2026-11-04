@@ -261,7 +261,7 @@ export class Kallfi {
     const surface =
       options.surface ?? (supplied ? knownOrigins[supplied.origin] : undefined) ?? "nsfw-disabled";
     if (surface !== "nsfw-disabled" && surface !== "nsfw-enabled") throw new TypeError("surface is invalid");
-    const expectedOrigin = surface === "nsfw-disabled" ? "https://acr.kallfi.com" : "https://acr.kallfi.red";
+    const expectedOrigin = surface === "nsfw-disabled" ? "https://api.kallfi.com" : "https://api.kallfi.red";
     const base = supplied ?? new URL(expectedOrigin);
     if (
       knownOrigins[base.origin] !== surface ||

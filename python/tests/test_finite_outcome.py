@@ -13,7 +13,7 @@ from kallfi.client import _api_error
 ])
 def test_finite_codes_never_expose_prose_or_key(payload, expected):
     response = httpx.Response(502, json=payload, request=httpx.Request(
-        "POST", "https://acr.kallfi.com/v1/account/actions/prepareAccountSoulBilling",
+        "POST", "https://api.kallfi.com/v1/account/actions/prepareAccountSoulBilling",
         headers={"Authorization": "Bearer secret_fixture"}))
     error = _api_error(response)
     assert error.code == expected

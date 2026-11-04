@@ -23,7 +23,7 @@ test("encodes opaque path identifiers and enforces mutation idempotency", async 
   let url;
   const client = new Kallfi({ apiKey: "key", fetch: async (input) => { url = input; return response(200, { soul_id: "soul_x" }); } });
   await client.souls.retrieve("soul/a?b");
-  assert.equal(url, "https://acr.kallfi.com/v1/souls/soul%2Fa%3Fb");
+  assert.equal(url, "https://api.kallfi.com/v1/souls/soul%2Fa%3Fb");
   await assert.rejects(() => client.souls.create({ external_soul_id: "x", kind: "human", description: "x", source_asset_ids: [] }, { idempotencyKey: "" }), TypeError);
 });
 

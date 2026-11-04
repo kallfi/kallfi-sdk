@@ -41,7 +41,7 @@ def test_surface_workspace_and_account_rejection():
         seen.append(request)
         return httpx.Response(200, json={"ok": True})
 
-    client = httpx.Client(base_url="https://acr.kallfi.red", transport=httpx.MockTransport(handler))
+    client = httpx.Client(base_url="https://api.kallfi.red", transport=httpx.MockTransport(handler))
     sdk = Kallfi(
         api_key="secret",
         surface="nsfw-enabled",
@@ -55,7 +55,7 @@ def test_surface_workspace_and_account_rejection():
         sdk.call("createPost", body={}, idempotency_key="one")
     assert len(seen) == 1
     with pytest.raises(ValueError, match="conflicts"):
-        Kallfi(api_key="secret", base_url="https://acr.kallfi.red")
+        Kallfi(api_key="secret", base_url="https://api.kallfi.red")
     with pytest.raises(ValueError, match="trusted"):
         Kallfi(api_key="secret", base_url="https://attacker.example")
 
@@ -72,7 +72,7 @@ def test_detailed_errors_no_redirect_or_mutation_retry():
     sdk = Kallfi(
         api_key="secret",
         http_client=httpx.Client(
-            base_url="https://acr.kallfi.com",
+            base_url="https://api.kallfi.com",
             follow_redirects=True,
             transport=httpx.MockTransport(handler),
         ),
@@ -89,7 +89,7 @@ def test_detailed_errors_no_redirect_or_mutation_retry():
 def test_bounded_detailed_async_response():
     async def scenario():
         client = httpx.AsyncClient(
-            base_url="https://acr.kallfi.com",
+            base_url="https://api.kallfi.com",
             transport=httpx.MockTransport(
                 lambda request: httpx.Response(
                     202,
@@ -141,7 +141,7 @@ def test_every_operation_uses_canonical_route_and_single_request(operation):
         return httpx.Response(200, json={"ok": True})
 
     with httpx.Client(
-        base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+        base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
     ) as client:
         sdk = Kallfi(api_key="secret", http_client=client)
         params = {name: "resource/a" for name in re.findall(r"{([^}]+)}", operation["path"])}
@@ -161,7 +161,7 @@ def test_every_operation_uses_canonical_route_and_single_request(operation):
         expected = "/api" + expected
         assert seen[0].url.host == "kallfi.com"
     else:
-        assert seen[0].url.host == "acr.kallfi.com"
+        assert seen[0].url.host == "api.kallfi.com"
     assert seen[0].url.raw_path == expected.encode()
 
 
@@ -181,7 +181,7 @@ def test_idempotency_runtime_limit_without_dispatch():
         return httpx.Response(202, json={"ok": True})
 
     with httpx.Client(
-        base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+        base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
     ) as client:
         sdk = Kallfi(api_key="secret", http_client=client)
         sdk.call("createPost", body={}, idempotency_key="a" * 128)
@@ -215,7 +215,7 @@ def test_unsupported_workspace_discovery_never_dispatches_operation(response):
         return response
 
     with httpx.Client(
-        base_url="https://acr.kallfi.com",
+        base_url="https://api.kallfi.com",
         cookies={"session": "private"},
         auth=("private", "password"),
         transport=httpx.MockTransport(handler),
@@ -247,7 +247,7 @@ def test_async_workspace_capability_is_fresh_and_exempts_personal():
             return httpx.Response(200, json={"ok": True})
 
         async with httpx.AsyncClient(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         ) as client:
             sdk = AsyncKallfi(
                 api_key="secret",
@@ -285,7 +285,7 @@ def test_async_old_server_and_network_failure_never_dispatch_operation():
                 return httpx.Response(404, json={"error": "missing"})
 
             async with httpx.AsyncClient(
-                base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+                base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
             ) as client:
                 sdk = AsyncKallfi(
                     api_key="secret",
@@ -314,7 +314,7 @@ def test_capability_body_limit_matches_typescript(size):
         return httpx.Response(200, json={"ok": True})
 
     with httpx.Client(
-        base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+        base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
     ) as client:
         sdk = Kallfi(
             api_key="secret",
@@ -343,7 +343,7 @@ def test_async_deadline_cancels_discovery_without_operation_dispatch():
             return httpx.Response(200, json=_WORKSPACE_CAPABILITY)
 
         async with httpx.AsyncClient(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         ) as client:
             sdk = AsyncKallfi(
                 api_key="secret",
@@ -372,7 +372,7 @@ def test_sync_discovery_consumes_operation_timeout_budget():
         return httpx.Response(200, json=_WORKSPACE_CAPABILITY)
 
     with httpx.Client(
-        base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+        base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
     ) as client:
         sdk = Kallfi(
             api_key="secret",

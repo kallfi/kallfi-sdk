@@ -8,8 +8,8 @@ test('detailed transport returns bounded metadata while existing request and res
  let headers:Record<string,string>|undefined;let url='';
  const client=new Kallfi({apiKey:'private-fixture',workspaceId:workspace,fetch:async(input,init)=>{if(String(input).endsWith('/v1/capabilities'))return json({protocolVersion:1,workspaceSelection:'account-principal-v1',selectorHeader:'X-Kallfi-Workspace-ID',omittedWorkspace:'personal',explicitWorkspaceScopes:['organization-runtime'],accountOperationWorkspace:'personal-only'});url=String(input);headers=init!.headers as Record<string,string>;assert.equal(init!.redirect,'manual');return json({value:1},202,{'x-request-id':'req_1','retry-after':'3','location':'/v1/operations/op_1'});}});
  const result=await client.requestDetailed<{value:number}>('GET','/v1/operations/op_1');
- assert.equal(url,'https://acr.kallfi.com/v1/operations/op_1');assert.equal(result.status,202);assert.equal(result.data.value,1);
- assert.equal(result.requestId,'req_1');assert.equal(result.retryAfter,'3');assert.equal(result.location,'https://acr.kallfi.com/v1/operations/op_1');assert.equal(result.contentType,'application/json');
+ assert.equal(url,'https://api.kallfi.com/v1/operations/op_1');assert.equal(result.status,202);assert.equal(result.data.value,1);
+ assert.equal(result.requestId,'req_1');assert.equal(result.retryAfter,'3');assert.equal(result.location,'https://api.kallfi.com/v1/operations/op_1');assert.equal(result.contentType,'application/json');
  assert.equal(headers!['X-Kallfi-Workspace-ID'],workspace);assert.equal(Object.keys(headers!).filter(k=>k.toLowerCase()==='x-kallfi-workspace-id').length,1);
  assert.deepEqual(await client.request('GET','/v1/operations/op_1'),{value:1});
 });

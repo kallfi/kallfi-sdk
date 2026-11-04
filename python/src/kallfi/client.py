@@ -229,7 +229,7 @@ def _decode(response: httpx.Response, model: Type[ModelT]) -> ModelT:
 def _configuration(
     api_key: str, base_url: Optional[str], surface: str, workspace_id: Optional[str]
 ) -> tuple[str, dict[str, str]]:
-    origins = {"nsfw-disabled": "https://acr.kallfi.com", "nsfw-enabled": "https://acr.kallfi.red"}
+    origins = {"nsfw-disabled": "https://api.kallfi.com", "nsfw-enabled": "https://api.kallfi.red"}
     if surface not in origins:
         raise ValueError("surface must be nsfw-disabled or nsfw-enabled")
     origin = base_url or origins[surface]
