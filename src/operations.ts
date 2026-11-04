@@ -1,5 +1,5 @@
 // GENERATED FILE. Do not edit; run npm run generate.
-// OpenAPI snapshot SHA-256: 742fe946d29ef7e286eead3c8cea50a8a344793b2136f843655f896daea1d99b
+// OpenAPI snapshot SHA-256: 41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784
 export const KALLFI_OPERATIONS = {
   "createSoulSourceAsset": {
     "method": "POST",
@@ -644,6 +644,46 @@ export const KALLFI_OPERATIONS = {
   "getAccountSoulDeletionStatus": {
     "method": "POST",
     "path": "/v1/account/actions/getAccountSoulDeletionStatus",
+    "scope": "account",
+    "pathParameters": [],
+    "queryParameters": [],
+    "bodyAllowed": true,
+    "bodyRequired": true,
+    "idempotencyRequired": true
+  },
+  "getAccountPost": {
+    "method": "POST",
+    "path": "/v1/account/actions/getAccountPost",
+    "scope": "account",
+    "pathParameters": [],
+    "queryParameters": [],
+    "bodyAllowed": true,
+    "bodyRequired": true,
+    "idempotencyRequired": true
+  },
+  "updateAccountPost": {
+    "method": "POST",
+    "path": "/v1/account/actions/updateAccountPost",
+    "scope": "account",
+    "pathParameters": [],
+    "queryParameters": [],
+    "bodyAllowed": true,
+    "bodyRequired": true,
+    "idempotencyRequired": true
+  },
+  "deleteAccountPost": {
+    "method": "POST",
+    "path": "/v1/account/actions/deleteAccountPost",
+    "scope": "account",
+    "pathParameters": [],
+    "queryParameters": [],
+    "bodyAllowed": true,
+    "bodyRequired": true,
+    "idempotencyRequired": true
+  },
+  "getAccountPostPublicationStatus": {
+    "method": "POST",
+    "path": "/v1/account/actions/getAccountPostPublicationStatus",
     "scope": "account",
     "pathParameters": [],
     "queryParameters": [],

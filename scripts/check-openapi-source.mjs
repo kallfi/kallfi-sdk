@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const EXPECTED_SHA256 =
-  "742fe946d29ef7e286eead3c8cea50a8a344793b2136f843655f896daea1d99b";
+  "41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784";
 const contractUrl = new URL("../openapi/openapi.v1.json", import.meta.url);
 const contract = await readFile(contractUrl);
 const actual = createHash("sha256").update(contract).digest("hex");

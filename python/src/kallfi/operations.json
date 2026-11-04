@@ -1,5 +1,5 @@
 {
-  "sourceSHA256": "742fe946d29ef7e286eead3c8cea50a8a344793b2136f843655f896daea1d99b",
+  "sourceSHA256": "41d53d7e55181d81d52684f1fa35b79d9c07b6581e579a84b748b539e0af0784",
   "operations": [
     {
       "operationId": "createSoulSourceAsset",
@@ -7,7 +7,21 @@
       "path": "/v1/soul-source-assets",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/IdempotencyKey"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -25,7 +39,21 @@
       "path": "/v1/souls",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/IdempotencyKey"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -43,7 +71,21 @@
       "path": "/v1/souls/{soul_id}",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SoulId"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": null
     },
     {
@@ -52,7 +94,24 @@
       "path": "/v1/souls/{soul_id}",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SoulId"
+        },
+        {
+          "$ref": "#/components/parameters/IdempotencyKey"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -70,7 +129,24 @@
       "path": "/v1/souls/{soul_id}/responses",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SoulId"
+        },
+        {
+          "$ref": "#/components/parameters/IdempotencyKey"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -88,7 +164,24 @@
       "path": "/v1/souls/{soul_id}/generations",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SoulId"
+        },
+        {
+          "$ref": "#/components/parameters/IdempotencyKey"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -106,7 +199,21 @@
       "path": "/v1/operations/{operation_id}",
       "scope": "workspace",
       "idempotencyRequired": false,
-      "parameters": [],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OperationId"
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": null
     },
     {
@@ -115,7 +222,26 @@
       "path": "/v1/posts",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -133,7 +259,26 @@
       "path": "/v1/media/uploads",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -151,7 +296,26 @@
       "path": "/v1/posts/generation-pricing",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -169,7 +333,26 @@
       "path": "/v1/posts/generations",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -189,11 +372,29 @@
       "idempotencyRequired": true,
       "parameters": [
         {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
           "name": "soul_id",
           "in": "path",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       ],
@@ -216,11 +417,29 @@
       "idempotencyRequired": true,
       "parameters": [
         {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
           "name": "soul_id",
           "in": "path",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       ],
@@ -243,11 +462,29 @@
       "idempotencyRequired": true,
       "parameters": [
         {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/ProductActionIdempotencyKey"
+          }
+        },
+        {
           "name": "soul_id",
           "in": "path",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/ManagedProductSoulId"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       ],
@@ -268,7 +505,28 @@
       "path": "/v1/account/actions/createAccountSoul",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -286,7 +544,28 @@
       "path": "/v1/account/actions/getAccountSoul",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -304,7 +583,28 @@
       "path": "/v1/account/actions/listAccountSoulDrafts",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -322,7 +622,28 @@
       "path": "/v1/account/actions/getAccountSoulDraft",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -340,7 +661,28 @@
       "path": "/v1/account/actions/updateAccountSoulDetails",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -358,7 +700,28 @@
       "path": "/v1/account/actions/generateAccountSoulLooks",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -376,7 +739,28 @@
       "path": "/v1/account/actions/generateAccountSoulVoice",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -394,7 +778,28 @@
       "path": "/v1/account/actions/selectAccountSoulVoice",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -412,7 +817,28 @@
       "path": "/v1/account/actions/updateAccountSoulLanguages",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -430,7 +856,28 @@
       "path": "/v1/account/actions/reviewAccountSoul",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -448,7 +895,28 @@
       "path": "/v1/account/actions/promoteAccountSoul",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -466,7 +934,28 @@
       "path": "/v1/account/actions/getAccountSoulLore",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -484,7 +973,28 @@
       "path": "/v1/account/actions/updateAccountSoulLore",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -502,7 +1012,28 @@
       "path": "/v1/account/actions/createAccountSoulReferenceUpload",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -520,7 +1051,28 @@
       "path": "/v1/account/actions/finalizeAccountSoulReferenceUpload",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -538,7 +1090,28 @@
       "path": "/v1/account/actions/abandonAccountSoulDraft",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -556,7 +1129,28 @@
       "path": "/v1/account/actions/deleteAccountSoulDraft",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -574,7 +1168,28 @@
       "path": "/v1/account/actions/prepareAccountSoulEditSeed",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -592,7 +1207,28 @@
       "path": "/v1/account/actions/checkAccountSoulHandle",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -610,7 +1246,28 @@
       "path": "/v1/account/actions/startAccountSoulConversation",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -628,7 +1285,28 @@
       "path": "/v1/account/actions/createAccountSoulResponse",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -646,7 +1324,28 @@
       "path": "/v1/account/actions/getAccountSoulResponses",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -664,7 +1363,28 @@
       "path": "/v1/account/actions/getAccountOperation",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -682,7 +1402,27 @@
       "path": "/v1/account/actions/getAccountCreatorPlan",
       "scope": "account",
       "idempotencyRequired": true,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -1586,6 +2326,162 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/GetAccountSoulDeletionStatusRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountPost",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountPost",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountPostRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "updateAccountPost",
+      "method": "POST",
+      "path": "/v1/account/actions/updateAccountPost",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateAccountPostRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "deleteAccountPost",
+      "method": "POST",
+      "path": "/v1/account/actions/deleteAccountPost",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAccountPostRequest"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operationId": "getAccountPostPublicationStatus",
+      "method": "POST",
+      "path": "/v1/account/actions/getAccountPostPublicationStatus",
+      "scope": "account",
+      "idempotencyRequired": true,
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+        },
+        {
+          "name": "X-Kallfi-Workspace-ID",
+          "in": "header",
+          "required": false,
+          "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAccountPostPublicationStatusRequest"
             }
           }
         }

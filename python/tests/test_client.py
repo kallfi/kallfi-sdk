@@ -39,7 +39,7 @@ def test_auth_and_safe_path_encoding():
         return httpx.Response(200, json=soul_payload())
 
     client = httpx.Client(
-        base_url="https://acr.kallfi.com",
+        base_url="https://api.kallfi.com",
         headers={"Authorization": "Bearer secret", "Accept": "application/json"},
         transport=httpx.MockTransport(handler),
     )
@@ -67,7 +67,7 @@ def test_structured_error_and_retry_after():
     sdk = Kallfi(
         api_key="secret",
         http_client=httpx.Client(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         ),
     )
     with pytest.raises(KallfiAPIError) as raised:
@@ -87,7 +87,7 @@ def test_invalid_json_is_transport_error():
     sdk = Kallfi(
         api_key="secret",
         http_client=httpx.Client(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         ),
     )
     with pytest.raises(KallfiTransportError):
@@ -103,7 +103,7 @@ def test_wait_is_bounded_and_returns_terminal_operation():
     sdk = Kallfi(
         api_key="secret",
         http_client=httpx.Client(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         ),
     )
     operation = sdk.operations.wait("op_1", timeout=1, interval=0.1)
@@ -117,7 +117,7 @@ def test_async_client_uses_the_same_typed_resource_contract():
             return httpx.Response(200, json=soul_payload())
 
         client = httpx.AsyncClient(
-            base_url="https://acr.kallfi.com", transport=httpx.MockTransport(handler)
+            base_url="https://api.kallfi.com", transport=httpx.MockTransport(handler)
         )
         async with AsyncKallfi(api_key="secret", http_client=client) as sdk:
             soul = await sdk.souls.retrieve("soul_valid")

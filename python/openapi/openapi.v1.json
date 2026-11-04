@@ -5679,6 +5679,310 @@
         "x-kallfi-canonical-method": "GET",
         "x-kallfi-read-only": true
       }
+    },
+    "/v1/account/actions/getAccountPost": {
+      "post": {
+        "operationId": "getAccountPost",
+        "tags": [
+          "Account product actions"
+        ],
+        "summary": "getAccountPost",
+        "description": "Account Post operation delegates to the canonical UI GET owner, retaining post access, safety, caption review, lifecycle, monetization and financial obligations. Required credential scope: a_to_z.manage. Account actor and surface come from the credential, never from body fields.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+          },
+          {
+            "name": "X-Kallfi-Workspace-ID",
+            "in": "header",
+            "required": false,
+            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAccountPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Canonical durable command acceptance; terminal output requires normal observation."
+          },
+          "400": {
+            "description": "Canonical input/revision/receipt or finite query validation failure."
+          },
+          "401": {
+            "description": "Credential/scope/grant/issuer/surface admission denied."
+          },
+          "403": {
+            "description": "Canonical product/safety/ownership admission denied."
+          },
+          "409": {
+            "description": "Canonical revision, pricing or idempotency conflict."
+          },
+          "429": {
+            "description": "Canonical rate/allowance limit."
+          },
+          "503": {
+            "description": "Canonical owner unavailable; no terminal success claimed."
+          }
+        },
+        "x-kallfi-command-scope": "account"
+      }
+    },
+    "/v1/account/actions/updateAccountPost": {
+      "post": {
+        "operationId": "updateAccountPost",
+        "tags": [
+          "Account product actions"
+        ],
+        "summary": "updateAccountPost",
+        "description": "Account Post operation delegates to the canonical UI PATCH owner, retaining post access, safety, caption review, lifecycle, monetization and financial obligations. Required credential scope: a_to_z.manage. Account actor and surface come from the credential, never from body fields.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+          },
+          {
+            "name": "X-Kallfi-Workspace-ID",
+            "in": "header",
+            "required": false,
+            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Canonical durable command acceptance; terminal output requires normal observation."
+          },
+          "400": {
+            "description": "Canonical input/revision/receipt or finite query validation failure."
+          },
+          "401": {
+            "description": "Credential/scope/grant/issuer/surface admission denied."
+          },
+          "403": {
+            "description": "Canonical product/safety/ownership admission denied."
+          },
+          "409": {
+            "description": "Canonical revision, pricing or idempotency conflict."
+          },
+          "429": {
+            "description": "Canonical rate/allowance limit."
+          },
+          "503": {
+            "description": "Canonical owner unavailable; no terminal success claimed."
+          }
+        },
+        "x-kallfi-command-scope": "account"
+      }
+    },
+    "/v1/account/actions/deleteAccountPost": {
+      "post": {
+        "operationId": "deleteAccountPost",
+        "tags": [
+          "Account product actions"
+        ],
+        "summary": "deleteAccountPost",
+        "description": "Account Post operation delegates to the canonical UI DELETE owner, retaining post access, safety, caption review, lifecycle, monetization and financial obligations. Required credential scope: a_to_z.manage. Account actor and surface come from the credential, never from body fields.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+          },
+          {
+            "name": "X-Kallfi-Workspace-ID",
+            "in": "header",
+            "required": false,
+            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Canonical durable command acceptance; terminal output requires normal observation."
+          },
+          "400": {
+            "description": "Canonical input/revision/receipt or finite query validation failure."
+          },
+          "401": {
+            "description": "Credential/scope/grant/issuer/surface admission denied."
+          },
+          "403": {
+            "description": "Canonical product/safety/ownership admission denied."
+          },
+          "409": {
+            "description": "Canonical revision, pricing or idempotency conflict."
+          },
+          "429": {
+            "description": "Canonical rate/allowance limit."
+          },
+          "503": {
+            "description": "Canonical owner unavailable; no terminal success claimed."
+          }
+        },
+        "x-kallfi-command-scope": "account"
+      }
+    },
+    "/v1/account/actions/getAccountPostPublicationStatus": {
+      "post": {
+        "operationId": "getAccountPostPublicationStatus",
+        "tags": [
+          "Account product actions"
+        ],
+        "summary": "getAccountPostPublicationStatus",
+        "description": "Account Post operation delegates to the canonical UI GET owner, retaining post access, safety, caption review, lifecycle, monetization and financial obligations. Required credential scope: a_to_z.manage. Account actor and surface come from the credential, never from body fields.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
+          },
+          {
+            "name": "X-Kallfi-Workspace-ID",
+            "in": "header",
+            "required": false,
+            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAccountPostPublicationStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Canonical durable command acceptance; terminal output requires normal observation."
+          },
+          "400": {
+            "description": "Canonical input/revision/receipt or finite query validation failure."
+          },
+          "401": {
+            "description": "Credential/scope/grant/issuer/surface admission denied."
+          },
+          "403": {
+            "description": "Canonical product/safety/ownership admission denied."
+          },
+          "409": {
+            "description": "Canonical revision, pricing or idempotency conflict."
+          },
+          "429": {
+            "description": "Canonical rate/allowance limit."
+          },
+          "503": {
+            "description": "Canonical owner unavailable; no terminal success claimed."
+          }
+        },
+        "x-kallfi-command-scope": "account"
+      }
     }
   },
   "components": {
@@ -12910,6 +13214,152 @@
         "required": [
           "query"
         ]
+      },
+      "GetAccountPostRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {}
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "includeComments": {
+                "type": "string",
+                "enum": [
+                  "true",
+                  "false"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "UpdateAccountPostRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "caption": {
+                "type": "string"
+              },
+              "isDraft": {
+                "type": "boolean"
+              },
+              "isPrivate": {
+                "type": "boolean"
+              },
+              "privateAccessMode": {
+                "type": "string",
+                "enum": [
+                  "subscription",
+                  "ppv",
+                  "both"
+                ]
+              },
+              "ppvCostGems": {
+                "type": "number"
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "return_to_draft"
+                ]
+              }
+            }
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "DeleteAccountPostRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "delete",
+                  "schedule_when_sponsorship_ends"
+                ]
+              }
+            }
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "GetAccountPostPublicationStatusRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {}
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
       }
     }
   }
