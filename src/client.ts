@@ -216,8 +216,10 @@ function pendingReferencePreflight(
     Object.keys(receipt).sort().join(",") !== "bindingFingerprint,packageId,version" ||
     receipt.version !== 1 ||
     typeof receipt.packageId !== "string" ||
+    receipt.packageId.length !== 36 ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(receipt.packageId) ||
     typeof receipt.bindingFingerprint !== "string" ||
+    receipt.bindingFingerprint.length !== 64 ||
     !/^[0-9a-f]{64}$/i.test(receipt.bindingFingerprint) ||
     receipt.packageId.includes(apiKey) ||
     receipt.bindingFingerprint.includes(apiKey)

@@ -42,6 +42,8 @@ test('other statuses, malformed pointers and extra receipt fields never become p
     [409, {...pending, receipt: {...receipt, packageId: 'private-prose'}}],
     [409, {...pending, receipt: {...receipt, bindingFingerprint: 'short'}}],
     [409, {...pending, receipt: {...receipt, private: 'discard'}}],
+    [409, {...pending, receipt: {...receipt, packageId: receipt.packageId + '\n'}}],
+    [409, {...pending, receipt: {...receipt, bindingFingerprint: receipt.bindingFingerprint + '\n'}}],
   ];
   for (const [status, payload] of cases) {
     const sdk = new Kallfi({apiKey: 'synthetic-test-key', fetch: async () => new Response(JSON.stringify(payload), {
