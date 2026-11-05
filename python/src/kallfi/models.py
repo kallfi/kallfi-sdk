@@ -689,15 +689,16 @@ class GetAccountSoulDraftRequest(BaseModel):
 class Body1(BaseModel):
     draftId: Optional[UUID] = None
     expectedRevision: Optional[conint(ge=1)] = None
-    profileHandle: Optional[str] = None
-    publicHandlePolicyVersion: Literal[3] = 3
-    displayName: Optional[str] = None
-    spokenLanguages: Optional[list[str]] = None
-    lore: Optional[str] = None
-    soulTagging: Optional[dict[str, Any]] = None
+    actionId: Optional[UUID] = None
+    sourceDescription: Optional[str] = None
+    requestedIdentity: Optional[dict[str, Any]] = None
+    references: Optional[list[dict[str, Any]]] = None
+    pendingUploadId: Optional[UUID] = None
+    cloudflareImageId: Optional[str] = None
+    expectedCommercialCommitment: Optional[dict[str, Any]] = None
 
 
-class UpdateAccountSoulDetailsRequest(BaseModel):
+class GenerateAccountSoulLooksRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -712,15 +713,11 @@ class Body2(BaseModel):
     draftId: Optional[UUID] = None
     expectedRevision: Optional[conint(ge=1)] = None
     actionId: Optional[UUID] = None
-    sourceDescription: Optional[str] = None
-    requestedIdentity: Optional[dict[str, Any]] = None
-    references: Optional[list[dict[str, Any]]] = None
-    pendingUploadId: Optional[UUID] = None
-    cloudflareImageId: Optional[str] = None
+    prompt: Optional[str] = None
     expectedCommercialCommitment: Optional[dict[str, Any]] = None
 
 
-class GenerateAccountSoulLooksRequest(BaseModel):
+class GenerateAccountSoulVoiceRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -734,12 +731,10 @@ class GenerateAccountSoulLooksRequest(BaseModel):
 class Body3(BaseModel):
     draftId: Optional[UUID] = None
     expectedRevision: Optional[conint(ge=1)] = None
-    actionId: Optional[UUID] = None
-    prompt: Optional[str] = None
-    expectedCommercialCommitment: Optional[dict[str, Any]] = None
+    candidateId: Optional[UUID] = None
 
 
-class GenerateAccountSoulVoiceRequest(BaseModel):
+class SelectAccountSoulVoiceRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -752,11 +747,12 @@ class GenerateAccountSoulVoiceRequest(BaseModel):
 
 class Body4(BaseModel):
     draftId: Optional[UUID] = None
+    expectedDetailsRevision: Optional[conint(ge=1)] = None
     expectedRevision: Optional[conint(ge=1)] = None
-    candidateId: Optional[UUID] = None
+    spokenLanguages: Optional[list[str]] = None
 
 
-class SelectAccountSoulVoiceRequest(BaseModel):
+class UpdateAccountSoulLanguagesRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -768,49 +764,14 @@ class SelectAccountSoulVoiceRequest(BaseModel):
 
 
 class Body5(BaseModel):
-    draftId: Optional[UUID] = None
-    expectedDetailsRevision: Optional[conint(ge=1)] = None
-    expectedRevision: Optional[conint(ge=1)] = None
-    spokenLanguages: Optional[list[str]] = None
-
-
-class UpdateAccountSoulLanguagesRequest(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-    )
-    body: Optional[Body5] = Field(
-        None,
-        description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
-    )
-    query: Optional[dict[str, Any]] = None
-
-
-class Body6(BaseModel):
-    draftId: Optional[UUID] = None
-    expectedRevision: Optional[conint(ge=1)] = None
-    age: Optional[int] = None
-
-
-class ReviewAccountSoulRequest(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-    )
-    body: Optional[Body6] = Field(
-        None,
-        description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
-    )
-    query: Optional[dict[str, Any]] = None
-
-
-class Body7(BaseModel):
-    draftId: Optional[UUID] = None
-    expectedRevision: Optional[conint(ge=1)] = None
-    expectedDetailsRevision: Optional[conint(ge=1)] = None
-    displayName: Optional[str] = None
-    profileHandle: Optional[str] = None
-    publicHandlePolicyVersion: Literal[3] = 3
-    spokenLanguages: Optional[list[str]] = None
-    loreInput: Optional[str] = None
+    draftId: UUID
+    expectedRevision: conint(ge=1)
+    expectedDetailsRevision: conint(ge=1)
+    displayName: str
+    profileHandle: str
+    publicHandlePolicyVersion: Literal[3]
+    spokenLanguages: list[str]
+    loreInput: str
     publishIntentId: Optional[UUID] = None
 
 
@@ -818,9 +779,9 @@ class PromoteAccountSoulRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body7] = Field(
-        None,
-        description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
+    body: Body5 = Field(
+        ...,
+        description="Publish the current persistent Soul wizard in one operation. Submit final display name, public handle, authored Lore and the canonical selected languages together with the exact draft/material revision and details revision. Name, handle and Lore are not separately saved on the draft. Idempotency-Key supplies publishIntentId; when supplied in the body it must match. Existing ownership, safety, readiness, language/revision, handle and atomic publish guards remain authoritative.",
     )
     query: Optional[dict[str, Any]] = None
 
@@ -840,7 +801,7 @@ class GetAccountSoulLoreRequest(BaseModel):
     query: Optional[Query2] = None
 
 
-class Body8(BaseModel):
+class Body6(BaseModel):
     entityId: Optional[UUID] = None
     extension: Optional[str] = None
     addition: Optional[str] = None
@@ -851,7 +812,7 @@ class UpdateAccountSoulLoreRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body8] = Field(
+    body: Optional[Body6] = Field(
         None,
         description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
     )
@@ -869,7 +830,7 @@ class CreateAccountSoulReferenceUploadRequest(BaseModel):
     query: Optional[dict[str, Any]] = None
 
 
-class Body9(BaseModel):
+class Body7(BaseModel):
     imageId: Optional[str] = None
     pendingId: Optional[UUID] = None
 
@@ -878,14 +839,14 @@ class FinalizeAccountSoulReferenceUploadRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body9] = Field(
+    body: Optional[Body7] = Field(
         None,
         description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
     )
     query: Optional[dict[str, Any]] = None
 
 
-class Body10(BaseModel):
+class Body8(BaseModel):
     draftId: Optional[UUID] = None
     expectedRevision: Optional[conint(ge=1)] = None
 
@@ -894,7 +855,7 @@ class AbandonAccountSoulDraftRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body10] = Field(
+    body: Optional[Body8] = Field(
         None,
         description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
     )
@@ -905,18 +866,7 @@ class DeleteAccountSoulDraftRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body10] = Field(
-        None,
-        description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
-    )
-    query: Optional[dict[str, Any]] = None
-
-
-class PrepareAccountSoulEditSeedRequest(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-    )
-    body: Optional[Body10] = Field(
+    body: Optional[Body8] = Field(
         None,
         description="Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict.",
     )
@@ -1590,7 +1540,7 @@ class GetAccountUnreadMessageCountRequest(BaseModel):
     body: Optional[dict[str, Any]] = None
 
 
-class Body13(BaseModel):
+class Body10(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -1607,7 +1557,7 @@ class MarkAccountConversationReadRequest(BaseModel):
         extra="forbid",
     )
     query: Optional[dict[str, Any]] = None
-    body: Body13
+    body: Body10
 
 
 class Category(Enum):
@@ -2436,7 +2386,7 @@ class Action(Enum):
     return_to_draft = "return_to_draft"
 
 
-class Body14(BaseModel):
+class Body11(BaseModel):
     caption: Optional[str] = None
     isDraft: Optional[bool] = None
     isPrivate: Optional[bool] = None
@@ -2456,7 +2406,7 @@ class UpdateAccountPostRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body14] = None
+    body: Optional[Body11] = None
     query: Query14
 
 
@@ -2465,7 +2415,7 @@ class Action1(Enum):
     schedule_when_sponsorship_ends = "schedule_when_sponsorship_ends"
 
 
-class Body15(BaseModel):
+class Body12(BaseModel):
     action: Optional[Action1] = None
 
 
@@ -2473,7 +2423,7 @@ class DeleteAccountPostRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body15] = None
+    body: Optional[Body12] = None
     query: Query14
 
 
@@ -2494,7 +2444,7 @@ class Mode1(Enum):
     prepare = "prepare"
 
 
-class Body16(BaseModel):
+class Body13(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -2516,7 +2466,7 @@ class PrepareAccountPostGenerationReferencesRequest(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    body: Optional[Body16] = Field(
+    body: Optional[Body13] = Field(
         None,
         description="Unmodified canonical reference-preflight body. The existing handler owns input parsing, preparation versus read semantics, authorization, safety and receipt validation. A supplied receipt is re-read and never starts another classification.",
     )

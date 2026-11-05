@@ -42,7 +42,7 @@ The original typed Soul resources remain available. Operation responses now use
 `operation.root.status`, because the canonical operation is a shared/surface union.
 
 `call(operation_id, body=..., path_params=..., query=..., idempotency_key=...)`
-accepts all 66 operation IDs in the bundled canonical OpenAPI snapshot. It returns
+accepts all 63 operation IDs in the bundled canonical OpenAPI snapshot. It returns
 `APIResponse` containing status, parsed JSON data, request ID, Retry-After,
 Location and Content-Type. Responses are bounded to 8 MiB by default; configure
 `max_response_bytes` per call. HTTP errors raise `KallfiAPIError`; malformed JSON,
@@ -82,7 +82,7 @@ URLs are not fetched automatically and API authorization is never forwarded.
 
 ## Contract and publication
 
-`openapi/openapi.v1.json` is the backend-owned 61-operation shared snapshot.
+`openapi/openapi.v1.json` is the backend-owned 63-operation shared snapshot.
 Its SHA256 is recorded in `src/kallfi/operations.json`; tests detect snapshot or
 operation drift. `scripts/generate-models.sh` generates Pydantic models from it;
 `scripts/check-models.sh` checks deterministic output.
@@ -156,3 +156,10 @@ Retain the returned receipt unchanged. Pending admission requires the canonical 
 ### Pending reference receipt recovery
 
 SDK 0.3.7 exposes canonical HTTP 409 pending reference preparation through `KallfiAPIError.reference_preflight`. Only the typed pending state and exact validated receipt are retained. Explicitly read the same locator with unchanged reference and owner scope; pending grants no admission and causes no automatic preparation retry or generation. Ordinary error handling and exclusion of arbitrary details remain unchanged.
+
+
+### Soul publication
+
+Use the current persistent Soul wizard operations for Looks and Voice, then submit final display name, public handle, selected languages and authored Lore together through `promoteAccountSoul`. Final name, handle and Lore have no separate draft-save operation. The language-selection operation retains the canonical Voice/revision contract. `updateAccountSoulDetails`, `reviewAccountSoul` and `prepareAccountSoulEditSeed` are removed from the canonical operation catalog. Published Soul Lore editing remains supported. This source catalog change is not a package release or hosted execution proof.
+
+The existing `npm run generate` owner also emits the Python operation manifest, so both clients retire the same command IDs from one canonical snapshot.

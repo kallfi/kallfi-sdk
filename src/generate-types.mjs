@@ -82,6 +82,7 @@ function dereference(value) {
     );
 }
 const operations = {};
+const pythonOperations = [];
 for (const [path, item] of Object.entries(contract.paths ?? {})) {
   for (const [method, operation] of Object.entries(item)) {
     if (
@@ -91,11 +92,12 @@ for (const [path, item] of Object.entries(contract.paths ?? {})) {
       continue;
     if (operations[operation.operationId])
       throw new Error("Duplicate operationId");
-    const parameters = new Map();
-    for (const entry of [
+    const declaredParameters = [
       ...(item.parameters ?? []),
       ...(operation.parameters ?? []),
-    ]) {
+    ];
+    const parameters = new Map();
+    for (const entry of declaredParameters) {
       const parameter = dereference(entry);
       if (!parameter?.name || !parameter.in)
         throw new Error("Invalid OpenAPI parameter");
@@ -110,6 +112,20 @@ for (const [path, item] of Object.entries(contract.paths ?? {})) {
     const scope = operation["x-kallfi-command-scope"];
     if (scope !== "workspace" && scope !== "account")
       throw new Error("Operation scope is required");
+    pythonOperations.push({
+      operationId: operation.operationId,
+      method: method.toUpperCase(),
+      path,
+      scope,
+      idempotencyRequired: declaredParameters.some(
+        (parameter) =>
+          parameter.in === "header" &&
+          parameter.name?.toLowerCase() === "idempotency-key" &&
+          parameter.required === true,
+      ),
+      parameters: declaredParameters,
+      requestBody: operation.requestBody ?? null,
+    });
     operations[operation.operationId] = {
       method: method.toUpperCase(),
       path,
@@ -134,6 +150,10 @@ const operationsOutput = `// GENERATED FILE. Do not edit; run npm run generate.\
 const outputs = [
   [outputPath, generated],
   [join(root, "src", "operations.ts"), operationsOutput],
+  [
+    join(root, "python", "src", "kallfi", "operations.json"),
+    JSON.stringify({ sourceSHA256: contractHash, operations: pythonOperations }, null, 2) + "\n",
+  ],
 ];
 if (process.argv.includes("--check")) {
   for (const [path, expected] of outputs) {

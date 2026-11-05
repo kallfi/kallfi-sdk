@@ -1,5 +1,5 @@
 // GENERATED FILE. Do not edit; run npm run generate.
-// OpenAPI snapshot SHA-256: 2f70c5fa2db0b1d0015043e09eafbae494d4af4f02cfcbdfcf5a00c055d21b65
+// OpenAPI snapshot SHA-256: 25ddb0f4833af18e397585c0e8bc94b17d12ac40b382d5e4396381cb635fd60e
 export const KALLFI_OPERATIONS = {
   "createSoulSourceAsset": {
     "method": "POST",
@@ -221,16 +221,6 @@ export const KALLFI_OPERATIONS = {
     "bodyRequired": true,
     "idempotencyRequired": true
   },
-  "updateAccountSoulDetails": {
-    "method": "POST",
-    "path": "/v1/account/actions/updateAccountSoulDetails",
-    "scope": "account",
-    "pathParameters": [],
-    "queryParameters": [],
-    "bodyAllowed": true,
-    "bodyRequired": true,
-    "idempotencyRequired": true
-  },
   "generateAccountSoulLooks": {
     "method": "POST",
     "path": "/v1/account/actions/generateAccountSoulLooks",
@@ -264,16 +254,6 @@ export const KALLFI_OPERATIONS = {
   "updateAccountSoulLanguages": {
     "method": "POST",
     "path": "/v1/account/actions/updateAccountSoulLanguages",
-    "scope": "account",
-    "pathParameters": [],
-    "queryParameters": [],
-    "bodyAllowed": true,
-    "bodyRequired": true,
-    "idempotencyRequired": true
-  },
-  "reviewAccountSoul": {
-    "method": "POST",
-    "path": "/v1/account/actions/reviewAccountSoul",
     "scope": "account",
     "pathParameters": [],
     "queryParameters": [],
@@ -344,16 +324,6 @@ export const KALLFI_OPERATIONS = {
   "deleteAccountSoulDraft": {
     "method": "POST",
     "path": "/v1/account/actions/deleteAccountSoulDraft",
-    "scope": "account",
-    "pathParameters": [],
-    "queryParameters": [],
-    "bodyAllowed": true,
-    "bodyRequired": true,
-    "idempotencyRequired": true
-  },
-  "prepareAccountSoulEditSeed": {
-    "method": "POST",
-    "path": "/v1/account/actions/prepareAccountSoulEditSeed",
     "scope": "account",
     "pathParameters": [],
     "queryParameters": [],

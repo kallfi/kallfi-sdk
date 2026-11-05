@@ -1413,82 +1413,6 @@
         "x-kallfi-command-scope": "account"
       }
     },
-    "/v1/account/actions/updateAccountSoulDetails": {
-      "post": {
-        "operationId": "updateAccountSoulDetails",
-        "tags": [
-          "Account product actions"
-        ],
-        "summary": "updateAccountSoulDetails",
-        "description": "Normal Account product action using canonical POST command owner. Required credential scope: souls.update. Active issuing membership, active grant, surface, account restrictions and product availability are checked before dispatch. Body/query cannot choose another handler, method or authenticated actor. ",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Idempotency-Key",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
-          },
-          {
-            "name": "X-Kallfi-Workspace-ID",
-            "in": "header",
-            "required": false,
-            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateAccountSoulDetailsRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "Canonical durable command acceptance; terminal output requires normal observation."
-          },
-          "400": {
-            "description": "Canonical input/revision/receipt or finite query validation failure."
-          },
-          "401": {
-            "description": "Credential/scope/grant/issuer/surface admission denied."
-          },
-          "403": {
-            "description": "Canonical product/safety/ownership admission denied."
-          },
-          "409": {
-            "description": "Canonical revision, pricing or idempotency conflict."
-          },
-          "429": {
-            "description": "Canonical rate/allowance limit."
-          },
-          "503": {
-            "description": "Canonical owner unavailable; no terminal success claimed."
-          }
-        },
-        "x-kallfi-command-scope": "account"
-      }
-    },
     "/v1/account/actions/generateAccountSoulLooks": {
       "post": {
         "operationId": "generateAccountSoulLooks",
@@ -1793,82 +1717,6 @@
         "x-kallfi-command-scope": "account"
       }
     },
-    "/v1/account/actions/reviewAccountSoul": {
-      "post": {
-        "operationId": "reviewAccountSoul",
-        "tags": [
-          "Account product actions"
-        ],
-        "summary": "reviewAccountSoul",
-        "description": "Normal Account product action using canonical POST command owner. Required credential scope: souls.update. Active issuing membership, active grant, surface, account restrictions and product availability are checked before dispatch. Body/query cannot choose another handler, method or authenticated actor. ",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Idempotency-Key",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
-          },
-          {
-            "name": "X-Kallfi-Workspace-ID",
-            "in": "header",
-            "required": false,
-            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReviewAccountSoulRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "Canonical durable command acceptance; terminal output requires normal observation."
-          },
-          "400": {
-            "description": "Canonical input/revision/receipt or finite query validation failure."
-          },
-          "401": {
-            "description": "Credential/scope/grant/issuer/surface admission denied."
-          },
-          "403": {
-            "description": "Canonical product/safety/ownership admission denied."
-          },
-          "409": {
-            "description": "Canonical revision, pricing or idempotency conflict."
-          },
-          "429": {
-            "description": "Canonical rate/allowance limit."
-          },
-          "503": {
-            "description": "Canonical owner unavailable; no terminal success claimed."
-          }
-        },
-        "x-kallfi-command-scope": "account"
-      }
-    },
     "/v1/account/actions/promoteAccountSoul": {
       "post": {
         "operationId": "promoteAccountSoul",
@@ -1876,7 +1724,7 @@
           "Account product actions"
         ],
         "summary": "promoteAccountSoul",
-        "description": "Normal Account product action using canonical POST command owner. Required credential scope: souls.update. Active issuing membership, active grant, surface, account restrictions and product availability are checked before dispatch. Body/query cannot choose another handler, method or authenticated actor. ",
+        "description": "Normal Account product action using canonical POST command owner. Required credential scope: souls.update. Active issuing membership, active grant, surface, account restrictions and product availability are checked before dispatch. Body/query cannot choose another handler, method or authenticated actor.  Publish the exact current wizard revision with all final identity fields together; there is no separate details-save, review or legacy replacement-seed command.",
         "parameters": [
           {
             "in": "header",
@@ -2361,82 +2209,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DeleteAccountSoulDraftRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Unchanged canonical response, including exact draft/revision/workflow or conversation projection.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "Canonical durable command acceptance; terminal output requires normal observation."
-          },
-          "400": {
-            "description": "Canonical input/revision/receipt or finite query validation failure."
-          },
-          "401": {
-            "description": "Credential/scope/grant/issuer/surface admission denied."
-          },
-          "403": {
-            "description": "Canonical product/safety/ownership admission denied."
-          },
-          "409": {
-            "description": "Canonical revision, pricing or idempotency conflict."
-          },
-          "429": {
-            "description": "Canonical rate/allowance limit."
-          },
-          "503": {
-            "description": "Canonical owner unavailable; no terminal success claimed."
-          }
-        },
-        "x-kallfi-command-scope": "account"
-      }
-    },
-    "/v1/account/actions/prepareAccountSoulEditSeed": {
-      "post": {
-        "operationId": "prepareAccountSoulEditSeed",
-        "tags": [
-          "Account product actions"
-        ],
-        "summary": "prepareAccountSoulEditSeed",
-        "description": "Normal Account product action using canonical POST command owner. Required credential scope: souls.update. Active issuing membership, active grant, surface, account restrictions and product availability are checked before dispatch. Body/query cannot choose another handler, method or authenticated actor. ",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Idempotency-Key",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "Canonical action UUID; mutation retries reuse this key. Reads also require a UUID at the machine transport boundary."
-          },
-          {
-            "name": "X-Kallfi-Workspace-ID",
-            "in": "header",
-            "required": false,
-            "description": "Untrusted explicit workspace UUID. Omitted selects Personal. Workspace commands require current membership, role, surface and grant; explicit denied selection never falls back. Account-owned commands reject a nonpersonal selected workspace. One Account surface key spans currently authorized workspaces; selecting a workspace never issues another key.",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PrepareAccountSoulEditSeedRequest"
               }
             }
           }
@@ -7951,53 +7723,6 @@
           }
         }
       },
-      "UpdateAccountSoulDetailsRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "body": {
-            "type": "object",
-            "properties": {
-              "draftId": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "expectedRevision": {
-                "type": "integer",
-                "minimum": 1
-              },
-              "profileHandle": {
-                "type": "string"
-              },
-              "publicHandlePolicyVersion": {
-                "type": "integer",
-                "const": 3
-              },
-              "displayName": {
-                "type": "string"
-              },
-              "spokenLanguages": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "lore": {
-                "type": "string"
-              },
-              "soulTagging": {
-                "type": "object"
-              }
-            },
-            "description": "Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict."
-          },
-          "query": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {}
-          }
-        }
-      },
       "GenerateAccountSoulLooksRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -8148,34 +7873,6 @@
           }
         }
       },
-      "ReviewAccountSoulRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "body": {
-            "type": "object",
-            "properties": {
-              "draftId": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "expectedRevision": {
-                "type": "integer",
-                "minimum": 1
-              },
-              "age": {
-                "type": "integer"
-              }
-            },
-            "description": "Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict."
-          },
-          "query": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {}
-          }
-        }
-      },
       "PromoteAccountSoulRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -8219,14 +7916,27 @@
                 "format": "uuid"
               }
             },
-            "description": "Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict."
+            "description": "Publish the current persistent Soul wizard in one operation. Submit final display name, public handle, authored Lore and the canonical selected languages together with the exact draft/material revision and details revision. Name, handle and Lore are not separately saved on the draft. Idempotency-Key supplies publishIntentId; when supplied in the body it must match. Existing ownership, safety, readiness, language/revision, handle and atomic publish guards remain authoritative.",
+            "required": [
+              "draftId",
+              "expectedRevision",
+              "expectedDetailsRevision",
+              "displayName",
+              "profileHandle",
+              "publicHandlePolicyVersion",
+              "spokenLanguages",
+              "loreInput"
+            ]
           },
           "query": {
             "type": "object",
             "additionalProperties": false,
             "properties": {}
           }
-        }
+        },
+        "required": [
+          "body"
+        ]
       },
       "GetAccountSoulLoreRequest": {
         "type": "object",
@@ -8345,31 +8055,6 @@
         }
       },
       "DeleteAccountSoulDraftRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "body": {
-            "type": "object",
-            "properties": {
-              "draftId": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "expectedRevision": {
-                "type": "integer",
-                "minimum": 1
-              }
-            },
-            "description": "Unmodified canonical product command body. This operation delegates all body semantics to the existing product owner; follow the canonical wizard revisions, selected output IDs, references and pricing receipts. No arbitrary handler, account actor, host or method is accepted. Listed body fields follow the existing canonical handler; canonical parsers retain final validation. UUID actionId for setup/looks/voice and publishIntentId for promotion are supplied from Idempotency-Key and cannot conflict."
-          },
-          "query": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {}
-          }
-        }
-      },
-      "PrepareAccountSoulEditSeedRequest": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

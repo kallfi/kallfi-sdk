@@ -1,6 +1,6 @@
 # Kallfi JavaScript SDK
 
-Typed, server-side JavaScript and TypeScript client for the Kallfi API. Supports the canonical 66-operation API with generated request and response types.
+Typed, server-side JavaScript and TypeScript client for the Kallfi API. Supports the canonical 63-operation API with generated request and response types.
 
 ## Install
 
@@ -68,3 +68,10 @@ Retain the returned receipt unchanged. A pending response is not accepted refere
 ### Pending reference receipt recovery
 
 SDK 0.3.7 retains a narrowly typed `KallfiApiError.referencePreflight` on canonical HTTP 409 pending reference preparation. It contains only `referenceSafetyState: "pending"` and the validated version/package/fingerprint receipt. Preserve that locator and explicitly call the same operation in read mode with unchanged references and owner scope. Pending is not accepted admission, and the SDK never retries preparation or launches generation. Other error bodies, arbitrary details and malformed receipts remain excluded.
+
+
+### Soul publication
+
+Use the current persistent Soul wizard operations for Looks and Voice, then submit final display name, public handle, selected languages and authored Lore together through `promoteAccountSoul`. Final name, handle and Lore have no separate draft-save operation. The language-selection operation retains the canonical Voice/revision contract. `updateAccountSoulDetails`, `reviewAccountSoul` and `prepareAccountSoulEditSeed` are removed from the canonical operation catalog. Published Soul Lore editing remains supported. This source catalog change is not a package release or hosted execution proof.
+
+The existing `npm run generate` owner also emits the Python operation manifest, so both clients retire the same command IDs from one canonical snapshot.

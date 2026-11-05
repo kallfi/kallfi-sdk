@@ -1,6 +1,6 @@
 /* eslint-disable */
 // GENERATED FILE. Do not edit by hand; run `npm run generate`.
-// OpenAPI snapshot SHA-256: 2f70c5fa2db0b1d0015043e09eafbae494d4af4f02cfcbdfcf5a00c055d21b65
+// OpenAPI snapshot SHA-256: 25ddb0f4833af18e397585c0e8bc94b17d12ac40b382d5e4396381cb635fd60e
 
 export interface ErrorResponse {
   "error": {
@@ -360,20 +360,6 @@ export interface GetAccountSoulDraftRequest {
 };
 }
 
-export interface UpdateAccountSoulDetailsRequest {
-  "body"?: {
-  "draftId"?: string;
-  "expectedRevision"?: number;
-  "profileHandle"?: string;
-  "publicHandlePolicyVersion"?: 3;
-  "displayName"?: string;
-  "spokenLanguages"?: ReadonlyArray<string>;
-  "lore"?: string;
-  "soulTagging"?: Record<string, unknown>;
-};
-  "query"?: Record<string, unknown>;
-}
-
 export interface GenerateAccountSoulLooksRequest {
   "body"?: {
   "draftId"?: string;
@@ -419,25 +405,16 @@ export interface UpdateAccountSoulLanguagesRequest {
   "query"?: Record<string, unknown>;
 }
 
-export interface ReviewAccountSoulRequest {
-  "body"?: {
-  "draftId"?: string;
-  "expectedRevision"?: number;
-  "age"?: number;
-};
-  "query"?: Record<string, unknown>;
-}
-
 export interface PromoteAccountSoulRequest {
-  "body"?: {
-  "draftId"?: string;
-  "expectedRevision"?: number;
-  "expectedDetailsRevision"?: number;
-  "displayName"?: string;
-  "profileHandle"?: string;
-  "publicHandlePolicyVersion"?: 3;
-  "spokenLanguages"?: ReadonlyArray<string>;
-  "loreInput"?: string;
+  "body": {
+  "draftId": string;
+  "expectedRevision": number;
+  "expectedDetailsRevision": number;
+  "displayName": string;
+  "profileHandle": string;
+  "publicHandlePolicyVersion": 3;
+  "spokenLanguages": ReadonlyArray<string>;
+  "loreInput": string;
   "publishIntentId"?: string;
 };
   "query"?: Record<string, unknown>;
@@ -482,14 +459,6 @@ export interface AbandonAccountSoulDraftRequest {
 }
 
 export interface DeleteAccountSoulDraftRequest {
-  "body"?: {
-  "draftId"?: string;
-  "expectedRevision"?: number;
-};
-  "query"?: Record<string, unknown>;
-}
-
-export interface PrepareAccountSoulEditSeedRequest {
   "body"?: {
   "draftId"?: string;
   "expectedRevision"?: number;

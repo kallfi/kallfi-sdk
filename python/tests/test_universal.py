@@ -29,7 +29,7 @@ def test_contract_drift():
         if isinstance(o, dict) and "operationId" in o
     }
     assert actual == {(o["operationId"], o["method"], o["path"]) for o in manifest["operations"]}
-    assert len(actual) == 66
+    assert len(actual) == 63
 
 
 def test_surface_workspace_and_account_rejection():
