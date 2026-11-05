@@ -64,3 +64,7 @@ const admission = await kallfi.operation("prepareAccountPostGenerationReferences
 ```
 
 Retain the returned receipt unchanged. A pending response is not accepted reference admission; use the canonical receipt read mode and wait for acceptance before requesting generation. This call does not launch generation. Availability requires the matching main API release.
+
+### Pending reference receipt recovery
+
+SDK 0.3.7 retains a narrowly typed `KallfiApiError.referencePreflight` on canonical HTTP 409 pending reference preparation. It contains only `referenceSafetyState: "pending"` and the validated version/package/fingerprint receipt. Preserve that locator and explicitly call the same operation in read mode with unchanged references and owner scope. Pending is not accepted admission, and the SDK never retries preparation or launches generation. Other error bodies, arbitrary details and malformed receipts remain excluded.

@@ -8,7 +8,7 @@ import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Awaitable, Callable, Optional, Type, TypeVar, Union
+from typing import Any, Awaitable, Callable, Literal, Optional, Type, TypedDict, TypeVar, Union
 from urllib.parse import quote, urlparse
 from uuid import RFC_4122, UUID
 
@@ -123,6 +123,17 @@ def _check_deadline(deadline: float) -> None:
         raise KallfiTimeoutError("Kallfi request exceeded its overall timeout budget")
 
 
+class ReferencePreflightReceipt(TypedDict):
+    version: Literal[1]
+    packageId: str
+    bindingFingerprint: str
+
+
+class ReferencePreflightPending(TypedDict):
+    referenceSafetyState: Literal["pending"]
+    receipt: ReferencePreflightReceipt
+
+
 class KallfiAPIError(KallfiError):
     def __init__(
         self,
@@ -138,6 +149,7 @@ class KallfiAPIError(KallfiError):
         outcome: Optional[str] = None,
         reconciliation_required: Optional[bool] = None,
         automatic_retry_allowed: Optional[bool] = None,
+        reference_preflight: Optional[ReferencePreflightPending] = None,
     ) -> None:
         super().__init__(message)
         self.status = status
@@ -150,6 +162,7 @@ class KallfiAPIError(KallfiError):
         self.outcome = outcome
         self.reconciliation_required = reconciliation_required
         self.automatic_retry_allowed = automatic_retry_allowed
+        self.reference_preflight = reference_preflight
 
 
 def _identifier(value: Identifier) -> str:
@@ -202,6 +215,33 @@ def _api_error(response: httpx.Response) -> KallfiAPIError:
     if (not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id)
             or (api_key and api_key in request_id)):
         request_id = None
+    reference_preflight: Optional[ReferencePreflightPending] = None
+    receipt = root.get("receipt")
+    if (
+        response.status_code == 409
+        and root.get("referenceSafetyState") == "pending"
+        and isinstance(receipt, dict)
+        and set(receipt) == {"version", "packageId", "bindingFingerprint"}
+        and type(receipt.get("version")) is int
+        and receipt["version"] == 1
+    ):
+        package_id = receipt.get("packageId")
+        fingerprint = receipt.get("bindingFingerprint")
+        if (
+            isinstance(package_id, str)
+            and re.fullmatch(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}", package_id)
+            and isinstance(fingerprint, str)
+            and re.fullmatch(r"[0-9a-fA-F]{64}", fingerprint)
+            and not (api_key and (api_key in package_id or api_key in fingerprint))
+        ):
+            reference_preflight = {
+                "referenceSafetyState": "pending",
+                "receipt": {
+                    "version": 1,
+                    "packageId": package_id,
+                    "bindingFingerprint": fingerprint,
+                },
+            }
     return KallfiAPIError(
         status=response.status_code,
         code=code,
@@ -214,6 +254,7 @@ def _api_error(response: httpx.Response) -> KallfiAPIError:
         outcome=outcome,
         reconciliation_required=reconciliation if type(reconciliation) is bool else None,
         automatic_retry_allowed=retry if type(retry) is bool else None,
+        reference_preflight=reference_preflight,
     )
 
 

@@ -6,6 +6,8 @@ from .client import (
     KallfiError,
     KallfiTimeoutError,
     KallfiTransportError,
+    ReferencePreflightPending,
+    ReferencePreflightReceipt,
     WorkspaceUnsupportedError,
 )
 from .models import *  # noqa: F403
@@ -18,5 +20,7 @@ __all__ = [
     "KallfiError",
     "KallfiTimeoutError",
     "KallfiTransportError",
+    "ReferencePreflightPending",
+    "ReferencePreflightReceipt",
     "WorkspaceUnsupportedError",
 ]

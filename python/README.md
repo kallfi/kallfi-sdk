@@ -152,3 +152,7 @@ admission = client.call(
 ```
 
 Retain the returned receipt unchanged. Pending admission requires the canonical receipt read mode; it is not accepted admission or generation completion. The operation does not launch generation and requires the matching main API release.
+
+### Pending reference receipt recovery
+
+SDK 0.3.7 exposes canonical HTTP 409 pending reference preparation through `KallfiAPIError.reference_preflight`. Only the typed pending state and exact validated receipt are retained. Explicitly read the same locator with unchanged reference and owner scope; pending grants no admission and causes no automatic preparation retry or generation. Ordinary error handling and exclusion of arbitrary details remain unchanged.

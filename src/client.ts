@@ -83,6 +83,18 @@ export class KallfiTimeoutError extends KallfiNetworkError {
   }
 }
 
+/** A pending receipt is only a locator; it grants no reference admission. */
+export interface ReferencePreflightReceipt {
+  readonly version: 1;
+  readonly packageId: string;
+  readonly bindingFingerprint: string;
+}
+
+export interface ReferencePreflightPending {
+  readonly referenceSafetyState: "pending";
+  readonly receipt: ReferencePreflightReceipt;
+}
+
 export class KallfiApiError extends Error {
   readonly status: number;
   readonly code: string;
@@ -92,6 +104,7 @@ export class KallfiApiError extends Error {
   readonly outcome?: "mutation_outcome_unknown" | "read_projection_unavailable";
   readonly reconciliationRequired?: boolean;
   readonly automaticRetryAllowed?: boolean;
+  readonly referencePreflight?: ReferencePreflightPending;
 
   constructor(options: {
     status: number;
@@ -103,6 +116,7 @@ export class KallfiApiError extends Error {
     outcome?: "mutation_outcome_unknown" | "read_projection_unavailable";
     reconciliationRequired?: boolean;
     automaticRetryAllowed?: boolean;
+    referencePreflight?: ReferencePreflightPending;
   }) {
     super(options.message);
     this.name = "KallfiApiError";
@@ -114,6 +128,7 @@ export class KallfiApiError extends Error {
     this.outcome = options.outcome;
     this.reconciliationRequired = options.reconciliationRequired;
     this.automaticRetryAllowed = options.automaticRetryAllowed;
+    this.referencePreflight = options.referencePreflight;
   }
 
   get requestId(): string | undefined {
@@ -188,6 +203,35 @@ function responseMetadata(response: Response, baseUrl: string) {
   return { status: response.status, requestId, retryAfter, location, contentType };
 }
 
+function pendingReferencePreflight(
+  payload: Record<string, unknown> | undefined,
+  status: number,
+  apiKey: string,
+): ReferencePreflightPending | undefined {
+  if (status !== 409 || payload?.referenceSafetyState !== "pending") return undefined;
+  const value = payload.receipt;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const receipt = value as Record<string, unknown>;
+  if (
+    Object.keys(receipt).sort().join(",") !== "bindingFingerprint,packageId,version" ||
+    receipt.version !== 1 ||
+    typeof receipt.packageId !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(receipt.packageId) ||
+    typeof receipt.bindingFingerprint !== "string" ||
+    !/^[0-9a-f]{64}$/i.test(receipt.bindingFingerprint) ||
+    receipt.packageId.includes(apiKey) ||
+    receipt.bindingFingerprint.includes(apiKey)
+  ) return undefined;
+  return {
+    referenceSafetyState: "pending",
+    receipt: {
+      version: 1,
+      packageId: receipt.packageId,
+      bindingFingerprint: receipt.bindingFingerprint,
+    },
+  };
+}
+
 function apiResponseError(
   payload: unknown,
   metadata: ReturnType<typeof responseMetadata>,
@@ -217,6 +261,7 @@ function apiResponseError(
   const retry = value?.automaticRetryAllowed ?? root?.automaticRetryAllowed;
   return new KallfiApiError({
     status: metadata.status,
+    referencePreflight: pendingReferencePreflight(root, metadata.status, apiKey),
     code,
     message: `Kallfi API request failed (${metadata.status})`,
     request_id: id,
